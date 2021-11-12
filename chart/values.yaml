@@ -1,13 +1,13 @@
 ett-base-helm-chart:
+  env: {}
+
   deployments:
     - name: auth-api
       replicaCount: 1
       command: "/bin/bash"
       args: "entrypoint_api.sh"
       probes: true
-      env:
-        SQL_URI: postgresql://postgres:1234@ett-postgresql.ett-postgresql.svc.cluster.local:5432/auth
-        SQL_POOL_SIZE: 1
+      env: {}
       image:
         repository: projectorigin/ett-auth
         tag: "latest"
@@ -17,11 +17,7 @@ ett-base-helm-chart:
       command: "/bin/bash"
       args: "entrypoint_consumer.sh"
       probes: true
-      env:
-        EVENT_BUS_HOST: my-cluster-kafka-plain-bootstrap.ett-kafka.svc.cluster.local
-        EVENT_BUS_PORT: 9092
-        SQL_URI: postgresql://postgres:1234@ett-postgresql.ett-postgresql.svc.cluster.local:5432/auth
-        SQL_POOL_SIZE: 1
+      env: {}
       image:
         repository: projectorigin/ett-auth
         tag: "latest"

@@ -7,5 +7,5 @@ version: v0.1.1
 
 dependencies:
   - name: ett-base-helm-chart
-    version: "v0.1.6"
+    version: "v0.1.9"
     repository: "https://energy-track-and-trace.github.io/helm-charts/"
