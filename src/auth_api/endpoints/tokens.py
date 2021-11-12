@@ -1,8 +1,8 @@
 from dataclasses import dataclass
 
 from energytt_platform.tokens import TokenEncoder
+from energytt_platform.auth import TOKEN_HEADER_NAME
 from energytt_platform.models.auth import InternalToken
-from energytt_platform.auth import TOKEN_HEADER_NAME, TOKEN_COOKIE_NAME
 from energytt_platform.api import (
     Endpoint,
     Context,
@@ -26,12 +26,10 @@ class ForwardAuth(Endpoint):
         """
         Handle HTTP request.
         """
-        opaque_token = context.cookies.get(TOKEN_COOKIE_NAME)
-
-        if not opaque_token:
+        if not context.opaque_token:
             raise Unauthorized()
 
-        internal_token = self.get_internal_token(opaque_token)
+        internal_token = self.get_internal_token(context.opaque_token)
 
         if internal_token is None:
             raise Unauthorized()

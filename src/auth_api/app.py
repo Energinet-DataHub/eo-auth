@@ -1,17 +1,23 @@
-from energytt_platform.api import Application
+from energytt_platform.api import Application, TokenGuard
 
-from auth_api.config import INTERNAL_TOKEN_SECRET
+from .config import (
+    INTERNAL_TOKEN_SECRET,
+    OIDC_LOGIN_CALLBACK_PATH,
+    OIDC_LOGIN_CALLBACK_URL,
+    OIDC_SSN_VALIDATE_CALLBACK_PATH,
+    OIDC_SSN_VALIDATE_CALLBACK_URL,
+)
 
 from .endpoints import (
+    # OpenID Connect:
+    OpenIdLogin,
+    OpenIDLoginCallback,
+    OpenIDSsnCallback,
+    OpenIdLogout,
+    # Tokens:
     ForwardAuth,
     InspectToken,
     CreateTestToken,
-    OpenIdLogin,
-    OpenIdLoginRedirect,
-    OpenIdLoginCallback,
-    OpenIdLogout,
-    OpenIdLogoutRedirect,
-    OpenIdLogoutCallback,
 )
 
 
@@ -28,42 +34,34 @@ def create_app() -> Application:
 
     # -- OpenID Connect Login ------------------------------------------------
 
+    # Login
     app.add_endpoint(
         method='GET',
         path='/oidc/login',
         endpoint=OpenIdLogin(),
     )
 
+    # Callback, after logging in
     app.add_endpoint(
         method='GET',
-        path='/oidc/login/redirect',
-        endpoint=OpenIdLoginRedirect(),
+        path=OIDC_LOGIN_CALLBACK_PATH,
+        endpoint=OpenIDLoginCallback(url=OIDC_LOGIN_CALLBACK_URL),
     )
 
+    # Callback, after verifying SSN
     app.add_endpoint(
         method='GET',
-        path='/oidc/login/callback',
-        endpoint=OpenIdLoginCallback(),
+        path=OIDC_SSN_VALIDATE_CALLBACK_PATH,
+        endpoint=OpenIDSsnCallback(url=OIDC_SSN_VALIDATE_CALLBACK_URL),
     )
 
     # -- OpenID Connect Logout -----------------------------------------------
 
     app.add_endpoint(
         method='GET',
-        path='/oidc/logout',
+        path='/logout',
         endpoint=OpenIdLogout(),
-    )
-
-    app.add_endpoint(
-        method='GET',
-        path='/oidc/logout/redirect',
-        endpoint=OpenIdLogoutRedirect(),
-    )
-
-    app.add_endpoint(
-        method='GET',
-        path='/oidc/logout/callback',
-        endpoint=OpenIdLogoutCallback(),
+        guards=[TokenGuard()]
     )
 
     # -- Træfik integration --------------------------------------------------

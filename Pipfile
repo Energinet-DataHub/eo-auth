@@ -12,7 +12,8 @@ testcontainers = "*"
 pyjwt = "*"
 authlib = "*"
 requests = "*"
-peterplys = "*"
+python-decouple = "*"
+peterplys = "0.4.6"
 
 [scripts]
 update-platform = "pip install --upgrade ./../ett-platform-utils"

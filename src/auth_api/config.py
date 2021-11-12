@@ -1,36 +1,74 @@
-import os
+from decouple import config
 
 
-DEBUG = True
+# -- General -----------------------------------------------------------------
 
-# Service description
-SERVICE_URL = 'http://localhost:9096'
-SERVICE_DOMAIN = '127.0.0.1'
-INTERNAL_TOKEN_SECRET = '54321'
+# Enable/disable debug mode
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-# Tokens
-TOKEN_HEADER_NAME = 'Authorization'
-TOKEN_COOKIE_NAME = 'Authorization'
-TOKEN_COOKIE_DOMAIN = SERVICE_DOMAIN
+# Service port (when running development server)
+DEVELOP_HOST = config('DEVELOP_HOST', default='127.0.0.1')
+
+# Service port (when running development server)
+DEVELOP_PORT = config('DEVELOP_PORT', default=9096, cast=int)
+
+# Service absolute URL (when running development server)
+DEVELOP_URL = f'http://{DEVELOP_HOST}:{DEVELOP_PORT}'
+
+# Service' public URL
+SERVICE_URL = config('SERVICE_URL', default=DEVELOP_URL)
+
+
+# -- Tokens ------------------------------------------------------------------
+
+# The domain to set token cookie on
+TOKEN_COOKIE_DOMAIN = config('TOKEN_COOKIE_DOMAIN', default=DEVELOP_HOST)
+
+# Scopes to grant when creating internal tokens
 TOKEN_DEFAULT_SCOPES = [
     'meteringpoints.read',
     'measurements.read',
 ]
 
-# OpenID Connect
-OIDC_CLIENT_ID = '0a775a87-878c-4b83-abe3-ee29c720c3e7'
-OIDC_CLIENT_SECRET = 'rnlguc7CM/wmGSti4KCgCkWBQnfslYr0lMDZeIFsCJweROTROy2ajEigEaPQFl76Py6AVWnhYofl/0oiSAgdtg=='
-# OIDC_WANTED_SCOPES = ('openid', 'mitid', 'nemid')
-OIDC_WANTED_SCOPES = ('openid', 'mitid', 'nemid', 'ssn', 'userinfo_token')
-# OIDC_PROVIDER_URL = 'https://pp.netseidbroker.dk/op/connect/authorize'
-OIDC_LOGIN_URL = 'https://pp.netseidbroker.dk/op/connect/authorize'
-OIDC_LOGOUT_URL = 'https://pp.netseidbroker.dk/op/connect/endsession'
-OIDC_TOKEN_URL = 'https://pp.netseidbroker.dk/op/connect/token'
-OIDC_JWKS_URL = 'https://pp.netseidbroker.dk/op/.well-known/openid-configuration/jwks'
-# OIDC_WELLKNOWN_URL = 'https://pp.netseidbroker.dk/op/.well-known/openid-configuration'
-OIDC_LOGIN_REDIRECT_URL = f'{SERVICE_URL}/oidc/login/callback'
-# OIDC_LOGOUT_REDIRECT_URL = ''
 
-# SQL
-SQL_URI = os.getenv('SQL_URI', 'postgresql://postgres:1234@localhost:5432/auth')
-SQL_POOL_SIZE = int(os.getenv('SQL_POOL_SIZE', 1))
+# -- Secrets -----------------------------------------------------------------
+
+# Secret used to sign internal token
+INTERNAL_TOKEN_SECRET = config('INTERNAL_TOKEN_SECRET')
+
+# Key to encrypt social security numbers
+SSN_ENCRYPTION_KEY = config('SSN_ENCRYPTION_KEY')
+
+
+# -- SQL ---------------------------------------------------------------------
+
+# SqlAlchemy connection string
+SQL_URI = config('SQL_URI')
+
+# Number of concurrent connection to SQL database
+SQL_POOL_SIZE = config('SQL_POOL_SIZE', default=1, cast=int)
+
+
+# -- URLs --------------------------------------------------------------------
+
+# Callback URL after OpenID Connect authentication flow
+OIDC_LOGIN_CALLBACK_PATH = '/oidc/login/callback'
+OIDC_LOGIN_CALLBACK_URL = \
+    f'{SERVICE_URL}{OIDC_LOGIN_CALLBACK_PATH}'
+
+# Callback URL after OpenID Connect SSN validation flow
+OIDC_SSN_VALIDATE_CALLBACK_PATH = '/oidc/login/callback/ssn'
+OIDC_SSN_VALIDATE_CALLBACK_URL = \
+    f'{SERVICE_URL}{OIDC_SSN_VALIDATE_CALLBACK_PATH}'
+
+
+# -- OpenID Connect ----------------------------------------------------------
+
+OIDC_CLIENT_ID = config('OIDC_CLIENT_ID')
+OIDC_CLIENT_SECRET = config('OIDC_CLIENT_SECRET')
+OIDC_AUTHORITY_URL = config('OIDC_AUTHORITY_URL')
+
+OIDC_LOGIN_URL = f'{OIDC_AUTHORITY_URL}/connect/authorize'
+OIDC_TOKEN_URL = f'{OIDC_AUTHORITY_URL}/connect/token'
+OIDC_JWKS_URL = f'{OIDC_AUTHORITY_URL}/.well-known/openid-configuration/jwks'
+OIDC_API_LOGOUT_URL = f'{OIDC_AUTHORITY_URL}/api/v1/session/logout'

@@ -2,24 +2,64 @@ from sqlalchemy import orm, func, and_
 
 from energytt_platform.sql import SqlQuery
 
-from .models import DbToken
+from .models import DbUser, DbExternalUser, DbToken, DbLoginRecord
 
 
-# class UserQuery(SqlQuery):
-#     """
-#     Query DbUser.
-#     """
-#     def _get_base_query(self) -> orm.Query:
-#         """
-#         TODO
-#         """
-#         return self.session.query(DbUser)
-#
-#     def has_subject(self, subject: str) -> 'UserQuery':
-#         """
-#         TODO
-#         """
-#         return self.filter(DbUser.subject == subject)
+class UserQuery(SqlQuery):
+    """
+    Query DbUser.
+    """
+    def _get_base_query(self) -> orm.Query:
+        """
+        TODO
+        """
+        return self.session.query(DbUser)
+
+    def has_ssn(self, ssn: str) -> 'UserQuery':
+        """
+        :param ssn: Social security number, encrypted
+        """
+        return self.filter(DbUser.ssn == ssn)
+
+
+class ExternalUserQuery(SqlQuery):
+    """
+    Query DbExternalUser.
+    """
+    def _get_base_query(self) -> orm.Query:
+        """
+        TODO
+        """
+        return self.session.query(DbExternalUser)
+
+    def has_external_subject(self, subject: str) -> 'ExternalUserQuery':
+        """
+        TODO
+        """
+        return self.filter(DbExternalUser.external_subject == subject)
+
+    def has_identity_provider(self, ip: str) -> 'ExternalUserQuery':
+        """
+        :param ip: ID/name of Identity Provider
+        """
+        return self.filter(DbExternalUser.identity_provider == ip)
+
+
+class LoginRecordQuery(SqlQuery):
+    """
+    Query DbLoginRecord.
+    """
+    def _get_base_query(self) -> orm.Query:
+        """
+        TODO
+        """
+        return self.session.query(DbLoginRecord)
+
+    def has_subject(self, subject: str) -> 'LoginRecordQuery':
+        """
+        TODO
+        """
+        return self.filter(DbLoginRecord.subject == subject)
 
 
 class TokenQuery(SqlQuery):
