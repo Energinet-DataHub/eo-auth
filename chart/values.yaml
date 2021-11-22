@@ -27,6 +27,7 @@ eo-base-helm-chart:
     servicePort: 9096
     middlewares:
       - auth-stripprefix
+      - eo-auth-service
 
   middleware:
     stripPrefix:
