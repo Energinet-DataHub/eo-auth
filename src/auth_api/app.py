@@ -14,6 +14,8 @@ from .endpoints import (
     OpenIDLoginCallback,
     OpenIDSsnCallback,
     OpenIdLogout,
+    # Profiles
+    GetProfile,
     # Tokens:
     ForwardAuth,
     InspectToken,
@@ -61,7 +63,16 @@ def create_app() -> Application:
         method='GET',
         path='/logout',
         endpoint=OpenIdLogout(),
-        guards=[TokenGuard()]
+        guards=[TokenGuard()],
+    )
+
+    # -- Profile(s) ----------------------------------------------------------
+
+    app.add_endpoint(
+        method='GET',
+        path='/profile',
+        endpoint=GetProfile(),
+        guards=[TokenGuard()],
     )
 
     # -- Træfik integration --------------------------------------------------

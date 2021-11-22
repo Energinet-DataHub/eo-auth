@@ -1,3 +1,5 @@
+from .profile import GetProfile
+
 from .tokens import (
     ForwardAuth,
     InspectToken,
