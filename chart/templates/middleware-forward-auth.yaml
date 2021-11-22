@@ -6,6 +6,6 @@ metadata:
     {{- include "eo-auth.labels" . | nindent 4 }}
 spec:
   forwardAuth:
-    address: http://{{ include "eo-auth.fullname" . }}.eo.svc.cluster.local/token/forward-auth
+    address: http://{{ include "eo-auth.fullname" . }}.{{ .Release.Namespace }}.svc.cluster.local/token/forward-auth
     authResponseHeaders:
       - Authorization
