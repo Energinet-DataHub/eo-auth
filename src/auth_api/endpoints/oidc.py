@@ -433,6 +433,10 @@ class OpenIdLogout(Endpoint):
     OpenID Connect Identity Provider.
     """
 
+    @dataclass
+    class Response:
+        success: bool
+
     @db.atomic()
     def handle_request(
             self,
@@ -465,38 +469,5 @@ class OpenIdLogout(Endpoint):
         return HttpResponse(
             status=200,
             cookies=(cookie,),
+            model=self.Response(success=True),
         )
-
-
-class OpenIdLogoutCallback(Endpoint):
-    """
-    Callback: Client is redirected to this endpoint from Identity Provider
-    after completing authentication flow.
-
-    TODO Cookie: HttpOnly, Secure, SameSite
-    TODO Cookie SKAL have timeout
-    """
-
-    @dataclass
-    class Request:
-        state: str
-        iss: Optional[str] = field(default=None)
-        code: Optional[str] = field(default=None)
-        scope: Optional[str] = field(default=None)
-        error: Optional[str] = field(default=None)
-        error_hint: Optional[str] = field(default=None)
-        error_description: Optional[str] = field(default=None)
-
-    @dataclass
-    class Response:
-        success: bool
-        url: str
-        token: Optional[str] = field(default=None)
-
-    @db.atomic()
-    def handle_request(
-            self,
-            request: Request,
-            session: db.Session,
-    ) -> TemporaryRedirect:
-        pass
