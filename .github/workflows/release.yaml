@@ -172,6 +172,7 @@ jobs:
           commit-message: Bump ${{ env.SERVICE_NAME }} to ${{ needs.create_release.outputs.release_tag }}
           committer: GitHub <noreply@github.com>
           branch: "automated/github_actions/bump-${{ env.SERVICE_NAME }}-version-${{ needs.create_release.outputs.release_tag }}"
+          labels: "automerge" # Indicates that pull requests may be auto merged
           body: |
             Bump ${{ env.SERVICE_NAME }} to ${{ needs.create_release.outputs.release_tag }}
 
