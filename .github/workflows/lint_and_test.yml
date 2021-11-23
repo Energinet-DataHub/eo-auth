@@ -117,4 +117,3 @@ jobs:
       - name: Running integrationtest
         run: |
           pipenv run integrationtest
-
