@@ -237,6 +237,7 @@ class OpenIDCallbackEndpoint(Endpoint):
             name=TOKEN_COOKIE_NAME,
             value=opaque_token,
             domain=TOKEN_COOKIE_DOMAIN,
+            path='/',
             http_only=True,
             same_site=True,
             secure=True,
@@ -459,6 +460,7 @@ class OpenIdLogout(Endpoint):
         cookie = Cookie(
             name=TOKEN_COOKIE_NAME,
             value='',
+            path='/',
             domain=TOKEN_COOKIE_DOMAIN,
             http_only=True,
             same_site=True,
