@@ -18,6 +18,7 @@ class GetProfile(Endpoint):
 
     @dataclass
     class Response:
+        success: bool
         profile: UserProfile
 
     def handle_request(self, context: Context) -> Response:
@@ -25,9 +26,11 @@ class GetProfile(Endpoint):
         Handle HTTP request.
         """
         return self.Response(
+            success=True,
             profile=UserProfile(
-                id=context.token.actor,
-                name='',
+                # id=context.token.actor,
+                id='1234',
+                name='John Doe',
                 company=None,
             ),
         )
