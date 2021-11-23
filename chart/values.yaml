@@ -1,4 +1,14 @@
+publicIngress:
+  paths:
+    - /api/auth/login
+  middlewares:
+    - auth-stripprefix
+
+fullnameOverride: "eo-auth"
+
 eo-base-helm-chart:
+  fullnameOverride: "eo-auth"
+
   env: {}
 
   deployments:
@@ -16,15 +26,17 @@ eo-base-helm-chart:
   service:
     deployment: auth-api
     type: ClusterIP
-    port: 9096
-    proxy:
-      host: "172.17.0.1"
+    port: 80
+#    proxy:
+#      host: "172.17.0.1"
 
   ingress:
     hosts: []
     paths:
       - /api/auth
-    servicePort: 9096
+    pathExceptions:
+      - /api/auth/login
+    servicePort: 80
     middlewares:
       - auth-stripprefix
       - eo-auth-service
