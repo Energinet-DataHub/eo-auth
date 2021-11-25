@@ -87,8 +87,8 @@ spec:
         {{- end}}
       {{- end }}
     {{- end }}
-    {{- if $tlsSecretName }}
-    tls:
-      secretName: {{ $tlsSecretName }}
-    {{- end }}
+  {{- if $tlsSecretName }}
+  tls:
+    secretName: {{ $tlsSecretName }}
+  {{- end }}
 {{- end }}
