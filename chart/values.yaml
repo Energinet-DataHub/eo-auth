@@ -1,6 +1,6 @@
 publicIngress:
   paths:
-    - /api/auth/login
+    - /api/auth/oidc/login
   middlewares:
     - name: auth-stripprefix
 
@@ -35,7 +35,7 @@ eo-base-helm-chart:
     paths:
       - /api/auth
     pathExceptions:
-      - /api/auth/login
+      - /api/auth/oidc/login
     servicePort: 9096
     middlewares:
       - name: auth-stripprefix
