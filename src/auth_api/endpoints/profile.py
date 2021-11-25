@@ -28,8 +28,7 @@ class GetProfile(Endpoint):
         return self.Response(
             success=True,
             profile=UserProfile(
-                # id=context.token.actor,
-                id='1234',
+                id=context.token.actor,
                 name='John Doe',
                 company=None,
             ),
