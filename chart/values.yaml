@@ -36,7 +36,7 @@ eo-base-helm-chart:
       - /api/auth
     pathExceptions:
       - /api/auth/oidc/login
-    servicePort: 9096
+    servicePort: 80
     middlewares:
       - name: auth-stripprefix
       - name: eo-auth-service
