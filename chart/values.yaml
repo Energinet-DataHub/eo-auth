@@ -2,7 +2,7 @@ publicIngress:
   paths:
     - /api/auth/login
   middlewares:
-    - auth-stripprefix
+    - name: auth-stripprefix
 
 fullnameOverride: "eo-auth"
 
@@ -24,7 +24,7 @@ eo-base-helm-chart:
         pullPolicy: Always
 
   service:
-    deployment: auth-api
+    deployment: api
     type: ClusterIP
     port: 80
 #    proxy:
@@ -38,8 +38,8 @@ eo-base-helm-chart:
       - /api/auth/login
     servicePort: 80
     middlewares:
-      - auth-stripprefix
-      - eo-auth-service
+      - name: auth-stripprefix
+      - name: eo-auth-service
 
   middleware:
     stripPrefix:

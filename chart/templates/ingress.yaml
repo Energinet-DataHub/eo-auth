@@ -49,10 +49,16 @@ spec:
     {{- if (or $middlewares $httpMiddelwares) }}
     middlewares:
       {{- range $httpMiddelwares }}
-      - name: {{ . }}
+      - name: {{ .name }}
+        {{- if .namespace }}
+        namespace: {{ .namespace }}
+        {{- end}}
       {{- end }}
       {{- range $middlewares }}
-      - name: {{ . }}
+      - name: {{ .name }}
+        {{- if .namespace }}
+        namespace: {{ .namespace }}
+        {{- end}}
       {{- end }}
     {{- end }}
 
@@ -75,7 +81,10 @@ spec:
     {{- if $middlewares }}
     middlewares:
       {{- range $middlewares }}
-      - name: {{ . }}
+      - name: {{ .name }}
+        {{- if .namespace }}
+        namespace: {{ .namespace }}
+        {{- end}}
       {{- end }}
     {{- end }}
     {{- if $tlsSecretName }}
