@@ -26,9 +26,9 @@ eo-base-helm-chart:
   service:
     deployment: api
     type: ClusterIP
-    port: 80
-#    proxy:
-#      host: "172.17.0.1"
+    port: 9096
+    proxy:
+      host: "172.17.0.1"
 
   ingress:
     hosts: []
@@ -36,7 +36,7 @@ eo-base-helm-chart:
       - /api/auth
     pathExceptions:
       - /api/auth/login
-    servicePort: 80
+    servicePort: 9096
     middlewares:
       - name: auth-stripprefix
       - name: eo-auth-service
