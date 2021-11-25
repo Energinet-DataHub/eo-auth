@@ -20,6 +20,9 @@ env:
 
   ##### update_base_env #####
 
+  # Helm chart path
+  HELM_CHART_PATH:  "yggdrasil/applications/eo/eo-auth/eo-auth-service.yaml"
+
   # Base environment path "{OWNER}/{REPO_NAME}"
   BASE_ENV_REPO: "Energinet-DataHub/eo-base-environment"
 
@@ -151,17 +154,24 @@ jobs:
         uses: jannekem/run-python-script-action@v1
         with:
           script: |
-            import yaml
+            import re
 
-            file = "yggdrasil/applications/eo/eo-auth/eo-auth-service.yaml"
+            file = "${{ env.HELM_CHART_PATH }}"
+            new_tag = "${{ needs.create_release.outputs.release_tag }}"
+
+            regex = "(^.*tag: )(.*)"
+
             with open(file) as f:
-                doc = yaml.safe_load(f)
-                print(doc)
+                data = f.read()
 
-                doc['eo-base-helm-chart']['deployments']['api']['image']['tag'] = "${{ needs.create_release.outputs.release_tag }}"
+            res = re.search(regex, data, flags=re.MULTILINE)
 
-                with open(file, 'w') as f:
-                    yaml.safe_dump(doc, f)
+            new_content = data.replace(res.group(2), new_tag)
+
+            with open(file, 'w') as f:
+                f.write(new_content)
+
+
 
       # Create a new branch and a pullrequest in the base environment
       - name: Create Pull Request
