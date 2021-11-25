@@ -10,6 +10,7 @@ eo-base-helm-chart:
   fullnameOverride: "eo-auth"
 
   env: {}
+  podSpec: {}
 
   randomSecret:
     eo-random-secret:
