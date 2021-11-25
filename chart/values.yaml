@@ -11,16 +11,19 @@ eo-base-helm-chart:
 
   env: {}
 
+  randomSecret:
+    eo-random-secret:
+      - eo-token-secret
+      - eo-ssn-secret 
+
   envSecrets:
    INTERNAL_TOKEN_SECRET:
-     secretName: eo-token-secret
-     key: SECRET
-     random: true
+     secretName: eo-random-secret
+     key: eo-token-secret
      
    SSN_ENCRYPTION_KEY:
-     secretName: eo-ssn-secret
-     key: SECRET
-     random: true
+     secretName: eo-random-secret
+     key: eo-ssn-secret
 
   deployments:
     api: 
