@@ -1,0 +1,94 @@
+{{- if .Values.publicIngress }}
+
+{{- $hosts := default (index .Values "eo-base-helm-chart" "ingress" "hosts") .Values.publicIngress.hosts }}
+{{- $middlewares := default (index .Values "eo-base-helm-chart" "ingress" "middlewares") .Values.publicIngress.middlewares }}
+{{- $httpMiddelwares := default (index .Values "eo-base-helm-chart" "ingress" "httpMiddelwares") .Values.publicIngress.httpMiddelwares }}
+{{- $tlsSecretName := default (index .Values "eo-base-helm-chart" "ingress" "tlsSecretName") .Values.publicIngress.tlsSecretName }}
+
+{{- $matchRules := list }}
+
+{{- if $hosts }}
+  {{- $hostsMatchRules := list }}
+  {{- range $hosts }}
+    {{- $hostsMatchRules = append $hostsMatchRules (printf "Host(`%s`)" . ) }}
+  {{- end}}
+  {{- $matchRules = append $matchRules (printf "(%s)" (join " || " $hostsMatchRules)) }}
+{{- end}}
+
+{{- if .Values.publicIngress.paths }}
+  {{- $pathsMatchRules := list }}
+  {{- range .Values.publicIngress.paths }}
+    {{- $pathsMatchRules = append $pathsMatchRules (printf "PathPrefix(`%s`)" . ) }}
+  {{- end}}
+  {{- $matchRules = append $matchRules (printf "(%s)" (join " || " $pathsMatchRules)) }}
+{{- end}}
+
+{{- if .Values.publicIngress.pathExceptions }}
+  {{- $invertedPathsMatchRules := list }}
+  {{- range .Values.publicIngress.pathExceptions }}
+    {{- $invertedPathsMatchRules = append $invertedPathsMatchRules (printf "PathPrefix(`%s`)" . ) }}
+  {{- end}}
+  {{- $matchRules = append $matchRules (printf "!(%s)" (join " || " $invertedPathsMatchRules)) }}
+{{- end}}
+
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ include "eo-auth.fullname" . }}-public-http
+  labels:
+    {{- include "eo-auth.labels" . | nindent 4 }}
+spec:
+  entryPoints:
+    - web
+  routes:
+  - match: {{join " && " $matchRules}}
+    kind: Rule
+    services:
+    - name: {{ include "eo-auth.fullname" . }}
+      port: {{ index .Values "eo-base-helm-chart" "service" "port" }}
+    {{- if (or $middlewares $httpMiddelwares) }}
+    middlewares:
+      {{- range $httpMiddelwares }}
+      - name: {{ .name }}
+        {{- if .namespace }}
+        namespace: {{ .namespace }}
+        {{- end}}
+      {{- end }}
+      {{- range $middlewares }}
+      - name: {{ .name }}
+        {{- if .namespace }}
+        namespace: {{ .namespace }}
+        {{- end}}
+      {{- end }}
+    {{- end }}
+
+---
+apiVersion: traefik.containo.us/v1alpha1
+kind: IngressRoute
+metadata:
+  name: {{ include "eo-auth.fullname" . }}-public-https
+  labels:
+    {{- include "eo-auth.labels" . | nindent 4 }}
+spec:
+  entryPoints:
+    - websecure
+  routes:
+  - match: {{join " && " $matchRules}}
+    kind: Rule
+    services:
+    - name: {{ include "eo-auth.fullname" . }}
+      port: {{ index .Values "eo-base-helm-chart" "service" "port" }}
+    {{- if $middlewares }}
+    middlewares:
+      {{- range $middlewares }}
+      - name: {{ .name }}
+        {{- if .namespace }}
+        namespace: {{ .namespace }}
+        {{- end}}
+      {{- end }}
+    {{- end }}
+  {{- if $tlsSecretName }}
+  tls:
+    secretName: {{ $tlsSecretName }}
+  {{- end }}
+{{- end }}

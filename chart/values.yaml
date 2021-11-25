@@ -1,5 +1,30 @@
+publicIngress:
+  paths:
+    - /api/auth/oidc/login
+  middlewares:
+    - name: auth-stripprefix
+
+fullnameOverride: "eo-auth"
+
 eo-base-helm-chart:
+  fullnameOverride: "eo-auth"
+
   env: {}
+  podSpec: {}
+
+  randomSecret:
+    eo-random-secret:
+      - eo-token-secret
+      - eo-ssn-secret 
+
+  envSecrets:
+   INTERNAL_TOKEN_SECRET:
+     secretName: eo-random-secret
+     key: eo-token-secret
+     
+   SSN_ENCRYPTION_KEY:
+     secretName: eo-random-secret
+     key: eo-ssn-secret
 
   deployments:
     api: 
@@ -14,20 +39,22 @@ eo-base-helm-chart:
         pullPolicy: Always
 
   service:
-    deployment: auth-api
+    deployment: api
     type: ClusterIP
-    port: 9096
-    proxy:
-      host: "172.17.0.1"
+    port: 80
+#    proxy:
+#      host: "172.17.0.1"
 
   ingress:
     hosts: []
     paths:
       - /api/auth
-    servicePort: 9096
+    pathExceptions:
+      - /api/auth/oidc/login
+    servicePort: 80
     middlewares:
-      - auth-stripprefix
-      - eo-auth-service
+      - name: auth-stripprefix
+      - name: eo-auth-service
 
   middleware:
     stripPrefix:

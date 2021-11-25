@@ -321,10 +321,11 @@ class TestOidcCallbackEndpointsSubjectKnown(OidcCallbackEndpointsSubjectKnownBas
             .assert_cookie(
                 name=TOKEN_COOKIE_NAME,
                 domain=TOKEN_COOKIE_DOMAIN,
+                path='/',
                 http_only=True,
                 same_site=True,
                 secure=True,
-        )
+            )
 
         opaque_token = cookies.get_value(TOKEN_COOKIE_NAME)
 
