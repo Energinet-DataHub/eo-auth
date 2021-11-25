@@ -159,12 +159,12 @@ jobs:
             file = "${{ env.HELM_CHART_PATH }}"
             new_tag = "${{ needs.create_release.outputs.release_tag }}"
 
-            regex = "(^.*tag: )(.*)"
+            regex = re.compile("(^.*tag: )(.*)", flags=re.MULTILINE)
 
             with open(file) as f:
                 data = f.read()
 
-            res = re.search(regex, data, flags=re.MULTILINE)
+            res = regex.search(data)
 
             new_content = data.replace(res.group(2), new_tag)
 
