@@ -259,3 +259,5 @@ To apply all existing database migrations, thus upgrading the database to the la
 When starting the services through their respective entrypoints, the first thing
 they do is apply migrations.
 
+# Workflows
+All workflows is described [here](.github/workflows/README.md).
