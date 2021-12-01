@@ -75,8 +75,8 @@ jobs:
         id: build_and_push
         uses: Energinet-DataHub/.github/.github/actions/docker-build-and-push@2.3.0
         with:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }} 
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          DOCKER_USERNAME: ${{ secrets.PO_DOCKERHUB_USERNAME }} 
+          DOCKER_PASSWORD: ${{ secrets.PO_DOCKERHUB_SECRET }}
           DOCKER_IMAGE: godske/eo-auth
           MAJOR: 0
           MINOR: 0
