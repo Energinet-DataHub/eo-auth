@@ -8,7 +8,7 @@ from origin.api import Endpoint, Context
 class UserProfile:
     id: str
     name: str
-    scope: List[str] = field(field(default_factory=list))
+    scope: List[str] = field(default_factory=list)
     company: Optional[str] = field(default=None)
 
 
@@ -31,7 +31,7 @@ class GetProfile(Endpoint):
             profile=UserProfile(
                 id=context.token.actor,
                 name='John Doe',
-                company=None,
+                company='New Company',
                 scope=context.token.scope,
             ),
         )
