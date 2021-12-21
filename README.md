@@ -95,6 +95,7 @@ Name | Description | Example
 `DEVELOP_PORT` | Port used by development server (optional) | `9096`
 **Tokens, Secrets, and Keys:** | |
 `TOKEN_COOKIE_DOMAIN` | The domain to set cookie on (Bearer token) | `project.com`
+`TOKEN_COOKIE_SAMESITE` | Whether the token cookie should be set as a SameSite cookie | `True`/`False`
 `INTERNAL_TOKEN_SECRET` | Secret to sign and verify internal tokens | `something-secret`
 `SSN_ENCRYPTION_KEY` | Key en encrypt social security numbers | `also-something-secret`
 **SQL:** | |

@@ -21,6 +21,7 @@ from auth_api.controller import db_controller
 from auth_api.config import (
     INTERNAL_TOKEN_SECRET,
     TOKEN_COOKIE_DOMAIN,
+    TOKEN_COOKIE_SAMESITE,
     TOKEN_DEFAULT_SCOPES,
     OIDC_LOGIN_CALLBACK_URL,
     OIDC_SSN_VALIDATE_CALLBACK_URL,
@@ -239,7 +240,7 @@ class OpenIDCallbackEndpoint(Endpoint):
             domain=TOKEN_COOKIE_DOMAIN,
             path='/',
             http_only=True,
-            same_site=True,
+            same_site=TOKEN_COOKIE_SAMESITE,
             secure=True,
         )
 
@@ -463,7 +464,7 @@ class OpenIdLogout(Endpoint):
             path='/',
             domain=TOKEN_COOKIE_DOMAIN,
             http_only=True,
-            same_site=True,
+            same_site=TOKEN_COOKIE_SAMESITE,
             secure=True,
             expires=datetime.now(tz=timezone.utc),
         )

@@ -24,6 +24,10 @@ SERVICE_URL = config('SERVICE_URL', default=DEVELOP_URL)
 # The domain to set token cookie on
 TOKEN_COOKIE_DOMAIN = config('TOKEN_COOKIE_DOMAIN', default=DEVELOP_HOST)
 
+# Whether the token cookie should be set as SameSite
+TOKEN_COOKIE_SAMESITE = config(
+    'TOKEN_COOKIE_SAMESITE', default=True, cast=bool)
+
 # Scopes to grant when creating internal tokens
 TOKEN_DEFAULT_SCOPES = [
     'meteringpoints.read',
