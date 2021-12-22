@@ -14,7 +14,7 @@ pyjwt = "*"
 authlib = "*"
 requests = "*"
 python-decouple = "*"
-origin-platform-utils = "0.5.0"
+origin-platform-utils = "0.5.1"
 
 [scripts]
 lint-flake8 = "flake8"
