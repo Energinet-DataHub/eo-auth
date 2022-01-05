@@ -1,6 +1,3 @@
-"""
-Tests specifically for OIDC login endpoint.
-"""
 import pytest
 
 from auth_api.config import TOKEN_COOKIE_SAMESITE, TOKEN_COOKIE_SECURE
