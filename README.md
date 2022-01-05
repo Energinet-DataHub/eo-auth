@@ -96,6 +96,7 @@ Name | Description | Example
 **Tokens, Secrets, and Keys:** | |
 `TOKEN_COOKIE_DOMAIN` | The domain to set cookie on (Bearer token) | `project.com`
 `TOKEN_COOKIE_SAMESITE` | Whether the token cookie should be set as a SameSite cookie | `True`/`False`
+`TOKEN_COOKIE_SECURE` | Whether the token cookie should be set as a Secure cookie | `True`/`False`
 `INTERNAL_TOKEN_SECRET` | Secret to sign and verify internal tokens | `something-secret`
 `SSN_ENCRYPTION_KEY` | Key en encrypt social security numbers | `also-something-secret`
 **SQL:** | |

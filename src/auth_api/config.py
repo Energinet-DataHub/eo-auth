@@ -28,6 +28,10 @@ TOKEN_COOKIE_DOMAIN = config('TOKEN_COOKIE_DOMAIN', default=DEVELOP_HOST)
 TOKEN_COOKIE_SAMESITE = config(
     'TOKEN_COOKIE_SAMESITE', default=True, cast=bool)
 
+# Whether the token cookie should be set as Secure
+TOKEN_COOKIE_SECURE = config(
+    'TOKEN_COOKIE_SECURE', default=True, cast=bool)
+
 # Scopes to grant when creating internal tokens
 TOKEN_DEFAULT_SCOPES = [
     'meteringpoints.read',

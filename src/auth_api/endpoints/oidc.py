@@ -22,6 +22,7 @@ from auth_api.config import (
     INTERNAL_TOKEN_SECRET,
     TOKEN_COOKIE_DOMAIN,
     TOKEN_COOKIE_SAMESITE,
+    TOKEN_COOKIE_SECURE,
     TOKEN_DEFAULT_SCOPES,
     OIDC_LOGIN_CALLBACK_URL,
     OIDC_SSN_VALIDATE_CALLBACK_URL,
@@ -241,7 +242,7 @@ class OpenIDCallbackEndpoint(Endpoint):
             path='/',
             http_only=True,
             same_site=TOKEN_COOKIE_SAMESITE,
-            secure=True,
+            secure=TOKEN_COOKIE_SECURE,
         )
 
         # Append (or override) query parameters to the return_url provided
@@ -465,7 +466,7 @@ class OpenIdLogout(Endpoint):
             domain=TOKEN_COOKIE_DOMAIN,
             http_only=True,
             same_site=TOKEN_COOKIE_SAMESITE,
-            secure=True,
+            secure=TOKEN_COOKIE_SECURE,
             expires=datetime.now(tz=timezone.utc),
         )
 

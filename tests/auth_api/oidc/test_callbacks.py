@@ -25,6 +25,7 @@ from auth_api.endpoints import AuthState
 from auth_api.queries import LoginRecordQuery
 from auth_api.config import (
     TOKEN_COOKIE_DOMAIN,
+    TOKEN_COOKIE_SECURE,
     OIDC_LOGIN_CALLBACK_PATH,
     OIDC_SSN_VALIDATE_CALLBACK_PATH,
 )
@@ -53,7 +54,7 @@ def assert_token(
         server_name=TOKEN_COOKIE_DOMAIN,
         key=TOKEN_COOKIE_NAME,
         value=opaque_token,
-        secure=True,
+        secure=TOKEN_COOKIE_SECURE,
         httponly=True,
         samesite='Strict',
     )
@@ -324,7 +325,7 @@ class TestOidcCallbackEndpointsSubjectKnown(OidcCallbackEndpointsSubjectKnownBas
                 path='/',
                 http_only=True,
                 same_site=True,
-                secure=True,
+                secure=TOKEN_COOKIE_SECURE,
             )
 
         opaque_token = cookies.get_value(TOKEN_COOKIE_NAME)
