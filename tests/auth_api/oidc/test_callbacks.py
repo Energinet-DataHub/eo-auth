@@ -26,6 +26,8 @@ from auth_api.queries import LoginRecordQuery
 from auth_api.config import (
     TOKEN_COOKIE_DOMAIN,
     TOKEN_COOKIE_SECURE,
+    TOKEN_COOKIE_HTTP_ONLY,
+    TOKEN_COOKIE_SAMESITE,
     OIDC_LOGIN_CALLBACK_PATH,
     OIDC_SSN_VALIDATE_CALLBACK_PATH,
 )
@@ -55,7 +57,7 @@ def assert_token(
         key=TOKEN_COOKIE_NAME,
         value=opaque_token,
         secure=TOKEN_COOKIE_SECURE,
-        httponly=True,
+        httponly=TOKEN_COOKIE_HTTP_ONLY,
         samesite='Strict',
     )
 
@@ -323,8 +325,8 @@ class TestOidcCallbackEndpointsSubjectKnown(OidcCallbackEndpointsSubjectKnownBas
                 name=TOKEN_COOKIE_NAME,
                 domain=TOKEN_COOKIE_DOMAIN,
                 path='/',
-                http_only=True,
-                same_site=True,
+                http_only=TOKEN_COOKIE_HTTP_ONLY,
+                same_site=TOKEN_COOKIE_SAMESITE,
                 secure=TOKEN_COOKIE_SECURE,
             )
 
