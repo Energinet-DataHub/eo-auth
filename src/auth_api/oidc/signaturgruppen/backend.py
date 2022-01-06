@@ -1,7 +1,4 @@
 import json
-import urllib.parse
-
-from auth_api.config import DEBUG
 
 from ..backend import OpenIDConnectBackend
 
@@ -81,7 +78,7 @@ class SignaturgruppenBackend(OpenIDConnectBackend):
             code=code,
             state=state,
             redirect_uri=redirect_uri,
-            verify=not DEBUG,
+            verify=True,
         )
 
         return SignaturgruppenToken.from_raw_token(

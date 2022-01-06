@@ -28,7 +28,7 @@ class OAuth2Session(_OAuth2Session):
         """
         jwks_response = requests.get(
             url=self.jwk_endpoint,
-            verify=not DEBUG,
+            verify=True,
         )
 
         return jwks_response.content.decode()
