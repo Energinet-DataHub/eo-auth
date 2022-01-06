@@ -43,8 +43,15 @@ class SignaturgruppenBackend(OpenIDConnectBackend):
             number as part of the flow
         :returns: Absolute URL @ Identity Provider
         """
-        scope = ['openid', 'mitid', 'nemid', 'userinfo_token']
+
+        # amr_values is a comma-seperated list of NemID login methods.
+        # nemid.otp enables authentication using nøglekort/app.
+        # nemid.keyfile enables authentication using nøglefil.
+        # The first item in the list is the default displayed option.
         amr_values = {'nemid': {'amr_values': 'nemid.otp nemid.keyfile'}}
+
+        # OpenID Connect scopes
+        scope = ['openid', 'mitid', 'nemid', 'userinfo_token']
 
         if validate_ssn:
             scope.append('ssn')
