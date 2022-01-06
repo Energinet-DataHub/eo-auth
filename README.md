@@ -8,65 +8,52 @@ This domain is responsible for:
 - Issuing authorization-tokens to clients
 - Translating opaque tokens to internal tokens (via a Træfik ForwardAuth endpoint)
 
-
 ---
-
 
 # Content
 
 - Building and running the services
-    - Requirements
-    - Installation and running locally
-    - Building and running Docker images
-    - Running tests
-    - Environment variables
+  - Requirements
+  - Installation and running locally
+  - Building and running Docker images
+  - Running tests
+  - Environment variables
 - Architecture and implementation
 - Database and migrations
 
-
 ---
-
 
 # Introduction
 
 TODO
 
-
 ## Data models
 
 TODO
 
-
 ---
-
 
 # System architecture
 
 TODO
 
-
 ## Data models
 
 TODO
-
 
 ## API endpoints
 
 TODO
 
-
 ## Bus messages (in and out)
 
 TODO
-
 
 ## Dependencies
 
 TODO
 
-
 ---
-
 
 # Configuration
 
@@ -87,46 +74,41 @@ should be defined as environment variables, thus not committed to Git by acciden
 
 ## Available options
 
-Name | Description | Example
-:--- | :--- | :--- |
-`DEBUG` | Whether or not to enable debugging mode (off by default) | `True`/`1` or `False`/`0`
-`SERVICE_URL` | Public URL to this service without trailing slash (defaults to `https://DEVELOP_HOST:DEVELOP_PORT`) | `https://project.com/api/auth`
-`DEVELOP_HOST` | Hostname used by development server (optional) | `127.0.0.1`
-`DEVELOP_PORT` | Port used by development server (optional) | `9096`
-**Tokens, Secrets, and Keys:** | |
-`TOKEN_COOKIE_DOMAIN` | The domain to set cookie on (Bearer token) | `project.com`
-`TOKEN_COOKIE_SAMESITE` | Whether the token cookie should be set as a SameSite cookie | `True`/`False`
-`TOKEN_COOKIE_SECURE` | Whether the token cookie should be set as a Secure cookie | `True`/`False`
-`TOKEN_COOKIE_HTTP_ONLY` | Whether the token cookie should be set as a HttpOnly cookie | `True`/`False`
-`INTERNAL_TOKEN_SECRET` | Secret to sign and verify internal tokens | `something-secret`
-`SSN_ENCRYPTION_KEY` | Key en encrypt social security numbers | `also-something-secret`
-**SQL:** | |
-`PSQL_HOST` | PostgreSQL server hostname | `127.0.0.1`
-`PSQL_PORT` | PostgreSQL server port | `5432`
-`PSQL_USER` | PostgreSQL username | `postgres`
-`PSQL_PASSWORD` | PostgreSQL password | `1234`
-`PSQL_DB` | PostgreSQL database name | `auth`
-`SQL_POOL_SIZE` | Connection pool size per container | `10`
-**OpenID Connect:** | |
-`OIDC_CLIENT_ID` | OpenID Connect client ID | 
-`OIDC_CLIENT_SECRET` | OpenID Connect client secret | 
-`OIDC_AUTHORITY_URL` | OpenID Connect authority URL | 
-
+| Name                           | Description                                                                                         | Example                        |
+| :----------------------------- | :-------------------------------------------------------------------------------------------------- | :----------------------------- |
+| `DEBUG`                        | Whether or not to enable debugging mode (off by default)                                            | `True`/`1` or `False`/`0`      |
+| `SERVICE_URL`                  | Public URL to this service without trailing slash (defaults to `https://DEVELOP_HOST:DEVELOP_PORT`) | `https://project.com/api/auth` |
+| `DEVELOP_HOST`                 | Hostname used by development server (optional)                                                      | `127.0.0.1`                    |
+| `DEVELOP_PORT`                 | Port used by development server (optional)                                                          | `9096`                         |
+| **Tokens, Secrets, and Keys:** |                                                                                                     |
+| `TOKEN_COOKIE_DOMAIN`          | The domain to set cookie on (Bearer token)                                                          | `project.com`                  |
+| `TOKEN_COOKIE_SAMESITE`        | Whether the token cookie should be set as a SameSite cookie                                         | `True`/`False`                 |
+| `TOKEN_COOKIE_HTTP_ONLY`       | Whether the token cookie should be set as a HttpOnly cookie                                         | `True`/`False`                 |
+| `INTERNAL_TOKEN_SECRET`        | Secret to sign and verify internal tokens                                                           | `something-secret`             |
+| `SSN_ENCRYPTION_KEY`           | Key en encrypt social security numbers                                                              | `also-something-secret`        |
+| **SQL:**                       |                                                                                                     |
+| `PSQL_HOST`                    | PostgreSQL server hostname                                                                          | `127.0.0.1`                    |
+| `PSQL_PORT`                    | PostgreSQL server port                                                                              | `5432`                         |
+| `PSQL_USER`                    | PostgreSQL username                                                                                 | `postgres`                     |
+| `PSQL_PASSWORD`                | PostgreSQL password                                                                                 | `1234`                         |
+| `PSQL_DB`                      | PostgreSQL database name                                                                            | `auth`                         |
+| `SQL_POOL_SIZE`                | Connection pool size per container                                                                  | `10`                           |
+| **OpenID Connect:**            |                                                                                                     |
+| `OIDC_CLIENT_ID`               | OpenID Connect client ID                                                                            |
+| `OIDC_CLIENT_SECRET`           | OpenID Connect client secret                                                                        |
+| `OIDC_AUTHORITY_URL`           | OpenID Connect authority URL                                                                        |
 
 ---
-
 
 # Installation and running locally (for development)
 
 The following sections describes how to install and run the project locally for development and debugging.
-
 
 ## Requirements
 
 - Python 3.8+
 - Pipenv
 - An SQL server with one database created in advance (currently only supports PostgreSQL, but could support any SQL database with minor modification through SQLAlchemy)
-
 
 ## First time installation
 
@@ -183,9 +165,7 @@ Run PEP8 linting:
 
     $ pipenv run flake8
 
-
 ---
-
 
 # Building and running production-ready Docker image
 
@@ -208,7 +188,6 @@ Web API:
 
     docker run --entrypoint /app/entrypoint_api.sh auth:XX
 
-
 ---
 
 # Updating dependencies (requirements.txt)
@@ -223,9 +202,7 @@ To lock production-only dependencies (for Docker containers):
 
     pipenv lock -r > requirements.txt
 
-
 ---
-
 
 # SQL Database
 
@@ -263,4 +240,5 @@ When starting the services through their respective entrypoints, the first thing
 they do is apply migrations.
 
 # Workflows
+
 All workflows is described [here](.github/workflows/README.md).
