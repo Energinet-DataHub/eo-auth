@@ -1,3 +1,6 @@
+import json
+import urllib.parse
+
 from auth_api.config import DEBUG
 
 from ..backend import OpenIDConnectBackend
@@ -41,6 +44,7 @@ class SignaturgruppenBackend(OpenIDConnectBackend):
         :returns: Absolute URL @ Identity Provider
         """
         scope = ['openid', 'mitid', 'nemid', 'userinfo_token']
+        amr_values = {'nemid': {'amr_values': 'nemid.otp nemid.keyfile'}}
 
         if validate_ssn:
             scope.append('ssn')
@@ -50,6 +54,7 @@ class SignaturgruppenBackend(OpenIDConnectBackend):
             redirect_uri=callback_uri,
             state=state,
             scope=scope,
+            idp_params=json.dumps(amr_values),
         )
 
         return url
