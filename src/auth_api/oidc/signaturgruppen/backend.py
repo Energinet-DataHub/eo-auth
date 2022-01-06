@@ -44,7 +44,7 @@ class SignaturgruppenBackend(OpenIDConnectBackend):
         :returns: Absolute URL @ Identity Provider
         """
 
-        # amr_values is a comma-seperated list of NemID login methods.
+        # amr_values is a space-seperated list of NemID login methods.
         # nemid.otp enables authentication using nøglekort/app.
         # nemid.keyfile enables authentication using nøglefil.
         # The first item in the list is the default displayed option.
