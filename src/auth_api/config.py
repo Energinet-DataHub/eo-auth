@@ -32,6 +32,10 @@ TOKEN_COOKIE_SAMESITE = config(
 TOKEN_COOKIE_SECURE = config(
     'TOKEN_COOKIE_SECURE', default=True, cast=bool)
 
+# Whether the token cookie should be set as HttpOnly
+TOKEN_COOKIE_HTTP_ONLY = config(
+    'TOKEN_COOKIE_HTTP_ONLY', default=True, cast=bool)
+
 # Scopes to grant when creating internal tokens
 TOKEN_DEFAULT_SCOPES = [
     'meteringpoints.read',
