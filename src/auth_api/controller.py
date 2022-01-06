@@ -67,20 +67,27 @@ class DatabaseController(object):
     def get_or_create_user(
             self,
             session: db.Session,
-            ssn: str,
+            ssn: Optional[str] = None,
+            tin: Optional[str] = None,
     ) -> DbUser:
         """
         TODO
 
         :param session: Database session
         :param ssn: Social security number, unencrypted
+        :param tin:
         :returns: TODO
         """
-        ssn_encrypted = encrypt_ssn(ssn)
+        ssn_encrypted = encrypt_ssn(ssn) if ssn is not None else None
 
-        user = UserQuery(session) \
-            .has_ssn(ssn_encrypted) \
-            .one_or_none()
+        query = UserQuery(session)
+
+        if ssn is not None:
+            query = query.has_ssn(ssn_encrypted)
+        if tin is not None:
+            query = query.has_tin(tin)
+
+        user = query.one_or_none()
 
         if user is None:
             user = DbUser(

@@ -367,7 +367,10 @@ class OpenIDLoginCallback(OpenIDCallbackEndpoint):
                     ),
                 )
             elif token.is_company:
-                pass
+                user = db_controller.get_or_create_user(
+                    session=session,
+                    tin=token.tin,
+                )
 
         return super(OpenIDLoginCallback, self).on_oidc_flow_succeeded(
             session=session,

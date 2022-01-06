@@ -26,7 +26,7 @@ class DbUser(db.ModelBase):
     ssn = sa.Column(sa.String(), index=True)
 
     # Social security number, encrypted
-    cvr = sa.Column(sa.String(), index=True)
+    cvr = sa.Column(sa.String(), index=True)  # TODO Rename to 'tin'
 
 
 class DbExternalUser(db.ModelBase):

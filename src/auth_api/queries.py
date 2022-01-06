@@ -21,6 +21,12 @@ class UserQuery(SqlQuery):
         """
         return self.filter(DbUser.ssn == ssn)
 
+    def has_tin(self, tin: str) -> 'UserQuery':
+        """
+        :param tin:
+        """
+        return self.filter(DbUser.cvr == tin)
+
 
 class ExternalUserQuery(SqlQuery):
     """
