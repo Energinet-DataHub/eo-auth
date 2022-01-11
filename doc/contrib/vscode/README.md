@@ -16,3 +16,6 @@ When system requirements are met, open the codeproject within VSCode. Upon openi
 
 
 You should then have a full-featured development environment up and running.
+
+### Git tips
+In some cases there might be problems, when pushing commits to remote git repository. These might be addessed [here](https://code.visualstudio.com/docs/remote/containers#_working-with-git).
