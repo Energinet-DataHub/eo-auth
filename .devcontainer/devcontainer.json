@@ -64,7 +64,6 @@
         "docker-from-docker": "latest"
     }, 
     "containerEnv": {
-        // Fix for TestContainers host pointing to localhost, might be different in some schenarios.
-        "TC_HOST": "172.17.0.1"
+        
     }
 }
