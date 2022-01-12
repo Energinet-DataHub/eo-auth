@@ -2,7 +2,10 @@
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.202.5/containers/python-3
 {
 	"name": "Python 3",
-	"runArgs": ["--init"],
+	"runArgs": [
+        "--init",
+        "--network=host" // Needed for using localhost within devcontainer
+    ],
 	"build": {
 		"dockerfile": "Dockerfile",
 		"context": "..",
