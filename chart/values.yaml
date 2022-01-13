@@ -18,24 +18,17 @@ eo-base-helm-chart:
     SQL_POOL_SIZE: 1
   podSpec: {}
 
-  randomSecret:
-    eo-random-secret:
-      - eo-token-secret
-      - eo-ssn-secret
-    postgres-password:
-      - postgresql-password
-
   envSecrets:
    INTERNAL_TOKEN_SECRET:
-     secretName: eo-random-secret
+     secretName: auth-random-secret
      key: eo-token-secret
      
    SSN_ENCRYPTION_KEY:
-     secretName: eo-random-secret
+     secretName: auth-random-secret
      key: eo-ssn-secret
 
    PSQL_PASSWORD:
-     secretName: postgres-password
+     secretName: auth-postgres-secret
      key: postgresql-password
 
   deployments:
@@ -78,4 +71,4 @@ global:
   postgresql:
     postgresqlUsername: postgres
     postgresqlDatabase: auth
-    existingSecret: postgres-password
+    existingSecret: auth-postgres-secret
