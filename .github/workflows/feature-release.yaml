@@ -10,7 +10,7 @@ jobs:
     name: Build and host container
     runs-on: ubuntu-latest
     env:
-      HOST_IMAGE_TAG: ${{ format('pr-{0}', github.event.pull_request.number) }}
+      HOST_IMAGE_TAG: ${{ format('pr-{0}-{1}', github.event.pull_request.number, github.run_number) }}
     if:
       startsWith(github.event.pull_request.head.ref, 'feature/')
     steps:
