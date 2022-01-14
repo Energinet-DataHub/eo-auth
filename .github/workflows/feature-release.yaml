@@ -15,7 +15,7 @@ jobs:
     env:
       HOST_IMAGE_TAG: ${{ format('pr-{0}', github.event.pull_request.number) }}
     if:
-      contains(env.HEAD_BRANCH, 'feature/')
+      contains(${{env.HEAD_BRANCH}}, 'feature/')
     steps:
       - uses: actions/checkout@v2
       - name: Container image name
