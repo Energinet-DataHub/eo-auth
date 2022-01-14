@@ -2,8 +2,6 @@ import requests
 from authlib.integrations.requests_client import \
     OAuth2Session as _OAuth2Session
 
-from auth_api.config import DEBUG
-
 
 class OAuth2Session(_OAuth2Session):
     """

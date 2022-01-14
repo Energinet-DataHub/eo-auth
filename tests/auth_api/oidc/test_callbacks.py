@@ -151,7 +151,9 @@ class TestOidcCallbackEndpoints(object):
 
         # -- Arrange ---------------------------------------------------------
 
-        state = AuthState(return_url='http://redirect-here.com/foobar')
+        state = AuthState(
+            fe_url='http://foobar.com',
+            return_url='http://redirect-here.com/foobar')
         state_encoded = state_encoder.encode(state)
 
         # -- Act -------------------------------------------------------------
@@ -201,9 +203,12 @@ class TestOidcCallbackEndpoints(object):
 
         # -- Arrange ---------------------------------------------------------
 
+        fe_url = 'http://foobar.com'
         return_url = 'http://redirect-here.com/foobar'
 
-        state = AuthState(return_url=return_url)
+        state = AuthState(
+            fe_url=fe_url,
+            return_url=return_url)
         state_encoded = state_encoder.encode(state)
 
         mock_fetch_token.side_effect = Exception('Test')

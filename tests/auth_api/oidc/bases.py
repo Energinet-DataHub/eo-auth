@@ -32,15 +32,25 @@ class OidcCallbackEndpointsSubjectKnownBase:
         return 'http://redirect-here.com/foobar?foo=bar'
 
     @pytest.fixture(scope='function')
+    def fe_url(self) -> str:
+        """
+        Client's fe_url
+        """
+        return 'http://foobar.com/'
+
+    @pytest.fixture(scope='function')
     def state_encoded(
             self,
             state_encoder: TokenEncoder[AuthState],
             return_url: str,
+            fe_url: str
     ) -> str:
         """
         AuthState, encoded
         """
-        state = AuthState(return_url=return_url)
+        state = AuthState(
+            fe_url=fe_url,
+            return_url=return_url)
         state_encoded = state_encoder.encode(state)
         return state_encoded
 
