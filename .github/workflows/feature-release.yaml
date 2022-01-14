@@ -1,0 +1,29 @@
+name: Feature Release
+
+on: 
+  pull_request:
+    branches: 
+      - main
+    
+jobs:
+  build_and_host_container:
+    name: Build and host container
+    runs-on: ubuntu-latest
+    env:
+      HEAD_BRANCH: ${{github.event.workflow_run.head_branch}}
+      HOST_IMAGE_TAG: ${{ format('pr-{0}', github.event.pull_request.number) }}
+    if:
+      contains(env.HEAD_BRANCH, 'feature/')
+    steps:
+      - uses: actions/checkout@v2
+      - name: Container image name
+        id: image-name
+        uses: ASzc/change-string-case-action@v2
+        with:
+          string: ghcr.io/${{ github.repository }}
+      - name: Build host container image
+        run: docker build ./ --file ./Dockerfile --tag ${{ steps.image-name.outputs.lowercase }}:${{ env.host-image-tag }}
+      - name: Publish host container image
+        run: |
+          docker login ghcr.io --username ${{ github.actor }} --password ${{ github.token }}
+          docker push ${{ steps.image-name.outputs.lowercase }}:${{ env.host-image-tag }}
