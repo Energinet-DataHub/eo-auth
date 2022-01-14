@@ -4,9 +4,6 @@ on:
   pull_request:
     branches: 
       - main
-
-env:
-  HEAD_BRANCH: ${{github.event.workflow_run.head_branch}}
     
 jobs:
   build_and_host_container:
@@ -15,7 +12,7 @@ jobs:
     env:
       HOST_IMAGE_TAG: ${{ format('pr-{0}', github.event.pull_request.number) }}
     if:
-      contains(${{env.HEAD_BRANCH}}, 'feature/')
+      contains(github.event.workflow_run.head_branch, 'feature/')
     steps:
       - uses: actions/checkout@v2
       - name: Container image name
