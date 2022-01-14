@@ -12,7 +12,7 @@ jobs:
     env:
       HOST_IMAGE_TAG: ${{ format('pr-{0}', github.event.pull_request.number) }}
     if:
-      contains(github.event.workflow_run.head_branch, 'feature/')
+      startsWith(github.event.pull_request.head.ref, 'feature/')
     steps:
       - uses: actions/checkout@v2
       - name: Container image name
