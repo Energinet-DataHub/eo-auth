@@ -27,7 +27,7 @@ env:
   BASE_ENV_REPO: "Energinet-DataHub/eo-base-environment"
 
   # Branch to make pull request to
-  BASE_ENV_REPO_BRANCH: "development"
+  BASE_ENV_REPO_BRANCH: "main"
 
   # The name of the service being updated and shown in pull request
   SERVICE_NAME: auth-service
