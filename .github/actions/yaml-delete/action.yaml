@@ -1,4 +1,4 @@
-name: Yaml set
+name: Yaml delete
 
 inputs:
   yaml_file:
@@ -6,9 +6,6 @@ inputs:
     required: true
   yaml_path:
     description: Where the target value is found
-    required: true
-  value:
-    description: The new value to set the target to
     required: true
 
 runs:
@@ -23,6 +20,6 @@ runs:
       shell: bash
       run: pip install yamlpath
 
-    - name: Set yaml value
+    - name: Delete yaml value
       shell: bash
-      run: yaml-set --change ${{ inputs.yaml_path }} --value ${{ inputs.value }} ${{ inputs.yaml_file }}
+      run: yaml-set --delete --change ${{ inputs.yaml_path }} ${{ inputs.yaml_file }}3
