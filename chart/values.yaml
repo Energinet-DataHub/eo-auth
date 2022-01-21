@@ -43,7 +43,7 @@ eo-base-helm-chart:
         pullPolicy: Always
 
         repository: ghcr.io/energinet-datahub/eo-auth-api
-        tag: pr-64-57
+        tag: pr-64-58
   service:
     deployment: api
     type: ClusterIP
