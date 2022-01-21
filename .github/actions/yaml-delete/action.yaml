@@ -22,4 +22,4 @@ runs:
 
     - name: Delete yaml value
       shell: bash
-      run: yaml-set --delete --change ${{ inputs.yaml_path }} ${{ inputs.yaml_file }}3
+      run: yaml-set --delete --change ${{ inputs.yaml_path }} ${{ inputs.yaml_file }}
