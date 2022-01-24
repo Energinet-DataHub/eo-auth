@@ -111,7 +111,7 @@ jobs:
         with:
           token: ${{ secrets.RELEASE_CHART_TOKEN }}
           chart_folder: chart
-          chart_repository: Energinet-DataHub/helm-charts
+          chart_repository: ${{ github.repository_owner }}/helm-charts
 
   main_update_environment_chart:
     name: Update production environment
