@@ -87,14 +87,14 @@ jobs:
           yaml_path: name
 
       - name: Update environment chart
-          uses: ./.github/actions/update-environment-chart
-          with:
-            env_token: ${{ secrets.UPDATE_ENV_TOKEN }}
-            env_repository: "${{ github.repository_owner }}/eo-base-environment"
-            release_name: "${{ steps.get-chart-name.outputs.result }}"
-            release_repository_url: "${{ github.repositoryUrl }}"
-            release_target_revision: "${{ github.event.pull_request.head.ref }}"
-            release_chart_path: "chart"
+        uses: ./.github/actions/update-environment-chart
+        with:
+          env_token: ${{ secrets.UPDATE_ENV_TOKEN }}
+          env_repository: ${{ github.repository_owner }}/eo-base-environment
+          release_name: ${{ steps.get-chart-name.outputs.result }}
+          release_repository_url: ${{ github.repositoryUrl }}
+          release_target_revision: ${{ github.event.pull_request.head.ref }}
+          release_chart_path: chart
 
   release_chart:
     name: Release domain chart
