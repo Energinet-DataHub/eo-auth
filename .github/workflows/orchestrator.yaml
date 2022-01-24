@@ -112,7 +112,8 @@ jobs:
         id: release_chart
         uses: Energinet-DataHub/.github/.github/actions/helm-release-chart@helm_releases_action
         with:
-          token: ${{ secrets.RELEASE_CHART_TOKEN }}
+          release_token: ${{ secrets.RELEASE_CHART_TOKEN }}
+          dispatch_token: ${{ secrets.RELEASE_CHART_TOKEN }}
           chart_folder: chart
           chart_repository: ${{ github.repository_owner }}/helm-charts
 
