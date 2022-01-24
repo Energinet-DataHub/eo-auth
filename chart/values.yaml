@@ -41,7 +41,6 @@ eo-base-helm-chart:
       env: {}
       image:
         pullPolicy: Always
-
         repository: ghcr.io/martinschmidt/eo-auth-api
         tag: pr-5-21
   service:
