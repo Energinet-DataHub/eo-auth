@@ -105,6 +105,9 @@ jobs:
       chart_name: ${{ steps.release_chart.outputs.chart_name }}
       chart_version: ${{ steps.release_chart.outputs.chart_version }}
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        
       - name: Release helm chart
         id: release_chart
         uses: Energinet-DataHub/.github/.github/actions/helm-release-chart@helm_releases_action
