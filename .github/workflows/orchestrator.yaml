@@ -71,7 +71,7 @@ jobs:
           name: api
 
   pr_update_environment_chart:
-    name: PR update environment chart
+    name: (PR) Update feature environment
     runs-on: ubuntu-latest
     needs: build_and_push_container
     if: github.event_name == 'pull_request'
@@ -97,7 +97,7 @@ jobs:
             release_chart_path: "chart"
 
   release_chart:
-    name: Release chart
+    name: Release domain chart
     runs-on: ubuntu-latest
     needs: build_and_push_container
     if: github.event_name == 'push' && github.ref_name == 'main'
@@ -111,10 +111,10 @@ jobs:
         with:
           token: ${{ secrets.RELEASE_CHART_TOKEN }}
           chart_folder: chart
-          chart_repository: Energinet-DataHub/helm-charts
+          chart_repository: ${{ github.repository_owner }}/helm-charts
 
   main_update_environment_chart:
-    name: main update environment chart
+    name: Update production environment
     runs-on: ubuntu-latest
     needs: release_chart
     steps:
