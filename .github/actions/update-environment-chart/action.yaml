@@ -32,7 +32,7 @@ runs:
       uses: benc-uk/workflow-dispatch@v1.1
       with:
         workflow: Update helm chart version
-        token: ${{ inputs.update_env_token }}
+        token: ${{ inputs.env_token }}
         repo: ${{ inputs.env_repository}}
         ref: ${{ inputs.env_branch }}
         inputs: |
