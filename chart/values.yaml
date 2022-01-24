@@ -43,7 +43,7 @@ eo-base-helm-chart:
         pullPolicy: Always
 
         repository: ghcr.io/martinschmidt/eo-auth-api
-        tag: pr-3-10
+        tag: pr-3-14
   service:
     deployment: api
     type: ClusterIP
