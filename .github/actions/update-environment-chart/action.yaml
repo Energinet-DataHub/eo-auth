@@ -40,6 +40,6 @@ runs:
             "name": "${{ inputs.release_name }}", 
             "repoURL": "${{ inputs.release_repository_url }}", 
             "targetRevision": "${{ inputs.release_target_revision }}", 
-            ${{ inputs.release_chart_path && '"path": "${{ inputs.release_chart_path }}"' || '' }} 
+            ${{ inputs.release_chart_path && "\"path\": \"${{ inputs.release_chart_path }}\"" || "" }} 
           }
         # TODO Validate if line above!
