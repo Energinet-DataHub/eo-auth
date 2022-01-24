@@ -1,3 +1,4 @@
+---
 publicIngress:
   paths:
     - /api/auth/oidc/login
@@ -19,30 +20,30 @@ eo-base-helm-chart:
   podSpec: {}
 
   envSecrets:
-   INTERNAL_TOKEN_SECRET:
-     secretName: auth-random-secret
-     key: eo-token-secret
-     
-   SSN_ENCRYPTION_KEY:
-     secretName: auth-random-secret
-     key: eo-ssn-secret
+    INTERNAL_TOKEN_SECRET:
+      secretName: auth-random-secret
+      key: eo-token-secret
 
-   PSQL_PASSWORD:
-     secretName: auth-postgres-secret
-     key: postgresql-password
+    SSN_ENCRYPTION_KEY:
+      secretName: auth-random-secret
+      key: eo-ssn-secret
+
+    PSQL_PASSWORD:
+      secretName: auth-postgres-secret
+      key: postgresql-password
 
   deployments:
-    api: 
+    api:
       replicaCount: 1
       command: "/bin/bash"
       args: "entrypoint_api.sh"
       probes: true
       env: {}
       image:
-        repository: projectorigin/auth
-        tag: "latest"
         pullPolicy: Always
 
+        repository: ghcr.io/energinet-datahub/eo-auth-api
+        tag: pr-64-58
   service:
     deployment: api
     type: ClusterIP

@@ -1,0 +1,44 @@
+# NOTICE: This workflow check the version in the chart/Chart.yaml file against the latest release tag. If your Chart.yaml is located elsewere you will need to update this.  
+name: Helm Chart Version Check
+on:
+  pull_request:
+    branches: [ main ]
+jobs:
+  check_version:
+    runs-on: ubuntu-latest
+
+    steps:
+    # Checkout main to get latest tag
+      - uses: actions/checkout@v2
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: 'Get Previous tag'
+        id: previoustag
+        uses: "WyriHaximus/github-action-get-previous-tag@v1"
+        with: 
+            fallback: v0.0.0
+
+    # Get next valid semvers
+      - name: 'Get next versions'
+        id: semvers
+        uses: "WyriHaximus/github-action-next-semvers@v1"
+        with:
+          version: ${{ steps.previoustag.outputs.tag }}
+
+      - uses: actions/checkout@v2
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Get helm chart version
+        run: | 
+          echo HELM_VERSION=$(grep "version: " chart/Chart.yaml | cut -f2 -d' ') >> $GITHUB_ENV
+          
+      - name: Print version
+        run: echo ${{ env.HELM_VERSION }}
+        
+      - name: Check versions
+        if: ${{ env.HELM_VERSION != steps.semvers.outputs.v_patch && env.HELM_VERSION != steps.semvers.outputs.v_minor && env.HELM_VERSION != steps.semvers.outputs.v_major }}
+        run: |
+          echo "The helm chart version ${{ env.HELM_VERSION }} must be an increment of the current version on main ${{ steps.previoustag.outputs.tag }}."
+          exit 1

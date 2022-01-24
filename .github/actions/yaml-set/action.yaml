@@ -1,0 +1,28 @@
+name: Yaml set
+
+inputs:
+  yaml_file:
+    description: Path to the yaml file to modify
+    required: true
+  yaml_path:
+    description: Where the target value is found
+    required: true
+  value:
+    description: The new value to set the target to
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.7' # Version range or exact version of a Python version to use, using SemVer's version range syntax
+        architecture: 'x64' # optional x64 or x86. Defaults to x64 if not specified
+    
+    - name: Install yamlpath
+      shell: bash
+      run: pip install yamlpath
+
+    - name: Set yaml value
+      shell: bash
+      run: yaml-set --change ${{ inputs.yaml_path }} --value ${{ inputs.value }} ${{ inputs.yaml_file }}

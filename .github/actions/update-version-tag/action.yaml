@@ -1,0 +1,38 @@
+name: Update version tag
+
+inputs:
+  image:
+    description: The container image name
+    required: true
+  tag:
+    description: The container image tag
+    required: true
+  name:
+    description: Deployment name
+    required: true
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v2
+
+    - name: Update image name 
+      uses: ./.github/actions/yaml-set
+      with:
+        yaml_file: chart/values.yaml
+        yaml_path: eo-base-helm-chart.deployments.${{ inputs.name }}.image.repository
+        value: ${{ inputs.image }}
+
+    - name: Update tag
+      uses: ./.github/actions/yaml-set
+      with:
+        yaml_file: chart/values.yaml
+        yaml_path: eo-base-helm-chart.deployments.${{ inputs.name }}.image.tag
+        value: ${{ inputs.tag }}
+
+    - name: Commit changes
+      uses: EndBug/add-and-commit@v7 
+      with:
+        add: 'chart/values.yaml'
+        message: 'Updated version tag for ${{ inputs.name }} in the helm chart'
+        push: true
