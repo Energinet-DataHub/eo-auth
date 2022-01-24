@@ -79,7 +79,53 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      - name: Get chart name
+        id: get-chart-name
+        uses: ./.github/actions/yaml-get
+        with:
+          yaml_file: chart/Chart.yaml
+          yaml_path: name
+
+      - name: Update environment chart
+          uses: ./.github/actions/update-environment-chart
+          with:
+            env_token: ${{ secrets.UPDATE_ENV_TOKEN }}
+            env_repository: "${{ github.repository_owner }}/eo-base-environment"
+            release_name: "${{ steps.get-chart-name.outputs.result }}"
+            release_repository_url: "${{ github.repositoryUrl }}"
+            release_target_revision: "${{ github.event.pull_request.head.ref }}"
+            release_chart_path: "chart"
+
+  release_chart:
+    name: Release chart
+    runs-on: ubuntu-latest
+    needs: build_and_push_container
+    if: github.event_name == 'push' && github.ref_name == 'main'
+    outputs:
+      chart_name: ${{ steps.release_chart.outputs.chart_name }}
+      chart_version: ${{ steps.release_chart.outputs.chart_version }}
+    steps:
+      - name: Release helm chart
+        id: release_chart
+        uses: Energinet-DataHub/.github/.github/actions/helm-release-chart@helm_releases_action
+        with:
+          token: ${{ secrets.RELEASE_CHART_TOKEN }}
+          chart_folder: chart
+          chart_repository: Energinet-DataHub/helm-charts
+
+  main_update_environment_chart:
+    name: main update environment chart
+    runs-on: ubuntu-latest
+    needs: release_chart
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Update environment chart
         uses: ./.github/actions/update-environment-chart
         with:
-          update_env_token: ${{ secrets.UPDATE_ENV_TOKEN }}
+          env_token: ${{ secrets.UPDATE_ENV_TOKEN }}
+          env_repository: ${{ github.repository_owner }}/eo-base-environment
+          release_name: ${{ needs.release_chart.outputs.chart_name }}
+          release_repository_url: https://energinet-datahub.github.io/helm-charts/
+          release_target_revision: ${{ needs.release_chart.outputs.chart_version }}
