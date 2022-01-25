@@ -19,6 +19,7 @@ jobs:
       ignore_lint_error: true
 
   build_container_and_update_chart:
+    name: Build containers
     needs: [py_validate]
     runs-on: ubuntu-latest
     strategy:
@@ -37,13 +38,14 @@ jobs:
           name: ${{ github.repository }}-${{ matrix.arrays.deployment_name }}
 
       - name: Update deployment in chart
-        uses: MartinSchmidt/ReusableWorkflow/.github/actions/update-version-tag@main
+        uses: MartinSchmidt/ReusableWorkflow/.github/actions/update_chart_deployment_image@main
         with: 
           deployment_name: ${{ matrix.arrays.deployment_name }}
           image: ${{ steps.docker_build.outputs.image_name}}
           tag: ${{ steps.docker_build.outputs.image_tag}}
 
   update_environment:
+    name: Update env
     needs: [build_container_and_update_chart]
     uses: MartinSchmidt/ReusableWorkflow/.github/workflows/chart_release_and_update_env.yaml@main
     with:
