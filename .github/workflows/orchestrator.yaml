@@ -27,16 +27,10 @@ jobs:
       python_version: ${{ env.PYTHON_VERSION}}
       test_tag: unittest
 
-  py_integration_test:
-    uses: MartinSchmidt/ci-workflows/.github/workflows/python_pipenv_test.yml@main
-    with:
-      python_version: ${{ env.PYTHON_VERSION}}
-      test_tag: integrationtest
-
   build_and_push_container:
     name: Build and push container
     runs-on: ubuntu-latest
-    needs: [py_lint, py_unit_test, py_integration_test]
+    needs: [py_lint, py_unit_test] #, py_integration_test]
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
