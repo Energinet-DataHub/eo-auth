@@ -19,12 +19,14 @@ jobs:
       exclude: ./src/migrations/versions
 
   py_unit_test:
+    name: Run python unit tests
     uses: MartinSchmidt/ReusableWorkflow/.github/workflows/python_pipenv_test.yml@main
     with:
       python_version: 3.8
       test_tag: unittest
 
   py_integration_test:
+    name: Run python integration tests
     uses: MartinSchmidt/ReusableWorkflow/.github/workflows/python_pipenv_test.yml@main
     with:
       python_version: 3.8
