@@ -15,20 +15,20 @@ env:
   
 jobs:
   py_lint:
-    uses: MartinSchmidt/ci-workflows/.github/workflows/python_pipenv_lint.yaml@main
+    uses: MartinSchmidt/ci-workflows/.github/workflows/python_pipenv_lint.yml@main
     continue-on-error: true
     with:
       python_version: ${{ env.PYTHON_VERSION}}
       exclude: ./src/migrations/versions
 
   py_unit_test:
-    uses: MartinSchmidt/ci-workflows/.github/workflows/python_pipenv_test.yaml@main
+    uses: MartinSchmidt/ci-workflows/.github/workflows/python_pipenv_test.yml@main
     with:
       python_version: ${{ env.PYTHON_VERSION}}
       test_tag: unittest
 
   py_integration_test:
-    uses: MartinSchmidt/ci-workflows/.github/workflows/python_pipenv_test.yaml@main
+    uses: MartinSchmidt/ci-workflows/.github/workflows/python_pipenv_test.yml@main
     with:
       python_version: ${{ env.PYTHON_VERSION}}
       test_tag: integrationtest
