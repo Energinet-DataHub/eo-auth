@@ -13,9 +13,9 @@ concurrency:
 jobs:
   py_lint:
     uses: MartinSchmidt/ReusableWorkflow/.github/workflows/python_pipenv_lint.yml@main
-    continue-on-error: true
     with:
       python_version: 3.8
+      ignore_lint_error: true
       exclude: ./src/migrations/versions
 
   py_unit_test:
