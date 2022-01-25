@@ -12,21 +12,23 @@ concurrency:
 
 jobs:
   py_lint:
-    uses: MartinSchmidt/ReusableWorkflow/.github/workflows/pythonlint.yml@main
+    uses: MartinSchmidt/ReusableWorkflow/.github/workflows/python_pipenv_lint.yml@main
+    continue-on-error: true
     with:
       python_version: 3.8
+      exclude: ./src/migrations/versions
 
-  # py_unit_test:
-  #   uses: MartinSchmidt/ci-workflows/.github/workflows/python_pipenv_test.yml@main
-  #   with:
-  #     python_version: ${{ env.PYTHON_VERSION}}
-  #     test_tag: unittest
+  py_unit_test:
+    uses: MartinSchmidt/ReusableWorkflow/.github/workflows/python_pipenv_test.yml@main
+    with:
+      python_version: 3.8
+      test_tag: unittest
 
-  # py_integration_test:
-  #   uses: MartinSchmidt/ci-workflows/.github/workflows/python_pipenv_test.yml@main
-  #   with:
-  #     python_version: ${{ env.PYTHON_VERSION}}
-  #     test_tag: integrationtest
+  py_integration_test:
+    uses: MartinSchmidt/ReusableWorkflow/.github/workflows/python_pipenv_test.yml@main
+    with:
+      python_version: 3.8
+      test_tag: integrationtest
 
   # build_and_push_container:
   #   name: Build and push container
