@@ -23,7 +23,7 @@ jobs:
     uses: MartinSchmidt/ReusableWorkflow/.github/workflows/build_and_push_container.yaml@main
     with:
       dockerfile: Dockerfile
-      name: ${{ github.repository }}-api
+      image_name: ${{ github.repository }}-api
 
   # update_tag_in_chart:
   #   needs: [build_and_push_container]
