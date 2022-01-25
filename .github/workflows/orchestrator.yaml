@@ -16,7 +16,7 @@ env:
 jobs:
   py_lint:
     # uses: MartinSchmidt/ci-workflows/.github/workflows/python_pipenv_lint.yml@main
-    uses: MartinSchmidt/ci_help/.github/workflows/pythonlint.yml@main
+    uses: MartinSchmidt/ReusableWorkflow/.github/workflows/pythonlint.yml@main
     # continue-on-error: true
     with:
       python_version: ${{ env.PYTHON_VERSION}}
