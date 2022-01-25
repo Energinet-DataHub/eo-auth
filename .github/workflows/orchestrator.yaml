@@ -10,14 +10,11 @@ concurrency:
   group: ${{ github.ref }}
   cancel-in-progress: false
 
-env:
-  PYTHON_VERSION: 3.8
-  
 jobs:
   py_lint:
     uses: MartinSchmidt/ReusableWorkflow/.github/workflows/pythonlint.yml@main
     with:
-      python_version: ${{ env.PYTHON_VERSION}}
+      python_version: 3.8
 
   # py_unit_test:
   #   uses: MartinSchmidt/ci-workflows/.github/workflows/python_pipenv_test.yml@main
