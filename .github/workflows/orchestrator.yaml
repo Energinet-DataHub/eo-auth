@@ -10,6 +10,7 @@ concurrency:
   group: ${{ github.ref }}
   cancel-in-progress: false
 
+
 jobs:
   py_validate:
     uses: MartinSchmidt/ReusableWorkflow/.github/workflows/python_pipenv_validate.yaml@main
