@@ -11,45 +11,29 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  py_lint:
-    uses: MartinSchmidt/ReusableWorkflow/.github/workflows/python_pipenv_lint.yml@main
+  py_validate:
+    uses: MartinSchmidt/ReusableWorkflow/.github/workflows/python_pipenv_validate.yaml@main
     with:
       python_version: 3.8
       ignore_lint_error: true
-      exclude: ./src/migrations/versions
-
-  py_unit_test:
-    name: Run python unit tests
-    uses: MartinSchmidt/ReusableWorkflow/.github/workflows/python_pipenv_test.yml@main
-    with:
-      python_version: 3.8
-      test_tag: unittest
-
-  py_integration_test:
-    name: Run python integration tests
-    uses: MartinSchmidt/ReusableWorkflow/.github/workflows/python_pipenv_test.yml@main
-    with:
-      python_version: 3.8
-      test_tag: integrationtest
 
   build_and_push_container:
-    name: Build and push container
-    runs-on: ubuntu-latest
-    needs: [py_lint, py_unit_test, py_integration_test]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    needs: [py_validate]
+    uses: MartinSchmidt/ReusableWorkflow/.github/workflows/build_and_push_container.yaml@main
+    with:
+      dockerfile: Dockerfile
+      name: ${{ github.repository }}-api
 
-      - name: Build and push container
-        id: build_and_push
-        uses: ./.github/actions/build-and-push-container
-
-      - name: Update deployment
-        uses: ./.github/actions/update-version-tag
-        with: 
-          image: ${{steps.build_and_push.outputs.container_image}}
-          tag: ${{steps.build_and_push.outputs.container_tag}}
-          name: api
+  # update_tag_in_chart:
+  #   needs: [build_and_push_container]
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Update deployment
+  #       uses: ./.github/actions/update-version-tag
+  #       with: 
+  #         name: api
+  #         image: ${{ needs.build_and_push_container.outputs.image_name}}
+  #         tag: ${{ needs.build_and_push_container.outputs.image_tag}}
 
   # pr_update_environment_chart:
   #   name: (PR) Update feature environment
