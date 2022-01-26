@@ -1,0 +1,55 @@
+name: Orchestrator
+
+on:
+  pull_request: {}
+  push:
+    branches:
+      - main
+
+concurrency: 
+  group: ${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  py_validate:
+    name: Validate python
+    uses: MartinSchmidt/ReusableWorkflow/.github/workflows/python_pipenv_validate.yaml@main
+    with:
+      python_version: 3.8
+      ignore_lint_error: true
+
+  build_container_and_update_chart:
+    name: Build containers
+    needs: [py_validate]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arrays: [ 
+          { deployment_name: "api", dockerfile: "Dockerfile" }
+        ]
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Update deployment in chart
+        id: docker_build
+        uses: MartinSchmidt/ReusableWorkflow/.github/actions/build_and_push_container@main
+        with: 
+          dockerfile: ${{ matrix.arrays.Dockerfile }}
+          name: ${{ github.repository }}-${{ matrix.arrays.deployment_name }}
+
+      - name: Update deployment in chart
+        uses: MartinSchmidt/ReusableWorkflow/.github/actions/update_chart_deployment_image@main
+        with: 
+          deployment_name: ${{ matrix.arrays.deployment_name }}
+          image: ${{ steps.docker_build.outputs.image_name}}
+          tag: ${{ steps.docker_build.outputs.image_tag}}
+
+  update_environment:
+    name: Update env
+    needs: [build_container_and_update_chart]
+    uses: MartinSchmidt/ReusableWorkflow/.github/workflows/chart_release_and_update_env.yaml@main
+    with:
+      chart_folder: chart 
+    secrets:
+      RELEASE_CHART_TOKEN: ${{ secrets.RELEASE_CHART_TOKEN }}
+      UPDATE_ENV_TOKEN: ${{ secrets.UPDATE_ENV_TOKEN }}
