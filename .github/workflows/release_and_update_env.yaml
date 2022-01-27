@@ -25,15 +25,11 @@ jobs:
     name: Define build matrix 
     runs-on: ubuntu-latest
     outputs:
-      chart_version:
-        description: The version to set the chart to
-        value: ${{ steps.get_semver.output.semver }}
-      containers:
-        description: The containers to build, and the versions to tag them with.
-        value: |
-          [ 
-            { deployment_name: "api", dockerfile: "Dockerfile", tag: ${{ steps.get_semver.output.semver }} }
-          ]
+      chart_version: ${{ steps.get_semver.output.semver }}
+      containers: |
+        [ 
+          { deployment_name: "api", dockerfile: "Dockerfile", tag: ${{ steps.get_semver.output.semver }} }
+        ]
     steps:
       - name: Get chart version
         id: get_semver
