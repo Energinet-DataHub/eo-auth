@@ -47,9 +47,9 @@ jobs:
         uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
         with:
           context: .
-          file: Dockerfile
+          file: DockerfileTest
           push: true
-          tags: ghcr.io/martinschmidt/eo-auth-api:0.1.5
+          tags: ghcr.io/MartinSchmidt/eo-auth-api:0.1.6
 
   build_container_and_release_chart:
     name: Build containers
