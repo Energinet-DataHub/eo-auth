@@ -22,10 +22,10 @@ jobs:
     name: Define build matrix 
     runs-on: ubuntu-latest
     outputs:
-      chart_version: ${{ steps.get_semver.output.semver }}
+      chart_version: ${{ steps.get_semver.outputs.semver }}
       containers: >-
         [
-          { "deployment_name": "api", "dockerfile": "Dockerfile", "image_tag": "1.2.3" }
+          { "deployment_name": "api", "dockerfile": "Dockerfile", "tag": "${{ steps.get_semver.outputs.semver }}" }
         ]
     steps:
       - name: Get chart version
