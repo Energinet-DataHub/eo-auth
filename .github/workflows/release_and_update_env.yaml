@@ -41,8 +41,8 @@ jobs:
     with:
       helm_repository: ${{ github.repository_owner }}/helm-charts
       chart_folder: chart
-      chart_version: ${{ needs.define_build.output.chart_version }}
-      containers: ${{ needs.define_build.output.containers }} |
+      chart_version: ${{ needs.define_build.outputs.chart_version }}
+      containers: ${{ needs.define_build.outputs.containers }} |
     secrets:
       RELEASE_CHART_TOKEN: ${{ secrets.RELEASE_CHART_TOKEN }}
 
