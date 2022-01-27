@@ -16,7 +16,7 @@ env:
 jobs:
   py_validate:
     name: Validate python
-    uses: Energinet-DataHub/.github/.github/workflows/python-pipenv-validate.yaml@main
+    uses: Energinet-DataHub/.github/.github/workflows/python-pipenv-validate.yaml@helm_releases_action
     with:
       python_version: 3.8
       ignore_lint_error: true
@@ -37,14 +37,14 @@ jobs:
     steps:
       - name: Get chart version
         id: get_semver
-        uses: Energinet-DataHub/.github/.github/actions/get-chart-semver@main
+        uses: Energinet-DataHub/.github/.github/actions/get-chart-semver@helm_releases_action
         with:
           chart_folder: ${{ env.chart }}
 
   build_container_and_release_chart:
     name: Build containers
     needs: [py_validate, define_build]
-    uses: Energinet-DataHub/.github/.github/workflows/build-containers-and-release-chart.yaml@main
+    uses: Energinet-DataHub/.github/.github/workflows/build-containers-and-release-chart.yaml@helm_releases_action
     with:
       helm_repository: ${{ github.repository_owner }}/helm-charts
       chart_folder: ${{ env.chart }}
@@ -58,7 +58,7 @@ jobs:
     needs: [build_container_and_release_chart]
     #only on: push to main OR PR on 'feature/**' branch
     if: github.event_name == 'push' && github.ref_name == 'main' || github.event_name == 'pull_request' && startsWith(github.event.pull_request.head.ref, 'feature/')
-    uses: Energinet-DataHub/.github/.github/workflows/update-chart-in-env.yaml@main
+    uses: Energinet-DataHub/.github/.github/workflows/update-chart-in-env.yaml@helm_releases_action
     with:
       env_repository: ${{ github.repository_owner }}/eo-base-environment
       env_branch: ${{ github.event_name == 'push' && github.ref_name == 'main' || github.event.pull_request.head.ref }}
