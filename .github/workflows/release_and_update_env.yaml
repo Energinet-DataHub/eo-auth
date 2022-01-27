@@ -11,6 +11,48 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Log in to the Container registry
+      uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+      with:
+        registry: ghcr.io
+        username: ${{ github.actor }}
+        password: ${{ github.token }}
+
+    - name: Container image name
+      id: image_name
+      uses: ASzc/change-string-case-action@v2
+      with:
+        string: ghcr.io/${{ github.repository }}-api
+
+    - name: Get tag
+      id: tag
+      shell: bash
+      run: |
+        if ${{github.event_name == 'push' && github.ref_name == 'main'}}
+        then    
+          echo "::set-output name=tag_name::$(grep 'version: ' chart/Chart.yaml | cut -f 2 -d ' ')"
+        elif ${{github.event_name == 'pull_request'}}
+        then
+          echo "::set-output name=tag_name::pr-${{ github.event.pull_request.number }}-${{ github.run_number }}"
+        else
+          echo Not supported on push to branches other than main
+          exit 1
+        fi
+
+    - name: Build and push Docker image
+      uses: docker/build-push-action@ad44023a93711e3deb337508980b4b5e9bcdc5dc
+      with:
+        context: .
+        push: true
+        tags: ${{ steps.image_name.outputs.lowercase }}:${{ steps.tag.outputs.tag_name }}
+
+
   py_validate:
     name: Validate python
     uses: Energinet-DataHub/.github/.github/workflows/python-pipenv-validate.yaml@helm_releases_action
