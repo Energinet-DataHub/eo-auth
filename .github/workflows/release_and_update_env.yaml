@@ -1,4 +1,4 @@
-name: Orchestrator
+name: CI/CD
 
 on:
   pull_request: {}
@@ -10,6 +10,9 @@ concurrency:
   group: ${{ github.ref }}
   cancel-in-progress: false
 
+env:
+  CHART_FOLDER: chart
+
 jobs:
   py_validate:
     name: Validate python
@@ -18,38 +21,49 @@ jobs:
       python_version: 3.8
       ignore_lint_error: true
 
-  build_container_and_update_chart:
-    name: Build containers
-    needs: [py_validate]
+  define_build:
+    name: Define build matrix 
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        arrays: [ 
-          { deployment_name: "api", dockerfile: "Dockerfile" }
-        ]
+    outputs:
+      chart_version:
+        description: The version to set the chart to
+        value: ${{ steps.get_semver.output.semver }}
+      containers:
+        description: The containers to build, and the versions to tag them with.
+        value: |
+          [ 
+            { deployment_name: "api", dockerfile: "Dockerfile", tag: ${{ steps.get_semver.output.semver }} }
+          ]
     steps:
-      - uses: actions/checkout@v2
+      - name: Get chart version
+        id: get_semver
+        uses: Energinet-DataHub/.github/.github/actions/get-chart-semver@main
+        with:
+          chart_folder: ${{ env.chart }}
 
-      - name: Update deployment in chart
-        id: docker_build
-        uses: Energinet-DataHub/.github/.github/actions/build-and-push-container@main
-        with: 
-          dockerfile: ${{ matrix.arrays.Dockerfile }}
-          name: ${{ github.repository }}-${{ matrix.arrays.deployment_name }}
-
-      - name: Update deployment in chart
-        uses: Energinet-DataHub/.github/.github/actions/update-chart-deployment-image@main
-        with: 
-          deployment_name: ${{ matrix.arrays.deployment_name }}
-          image: ${{ steps.docker_build.outputs.image_name}}
-          tag: ${{ steps.docker_build.outputs.image_tag}}
+  build_container_and_release_chart:
+    name: Build containers
+    needs: [py_validate, define_build]
+    uses: Energinet-DataHub/.github/.github/workflows/build-containers-and-release-chart.yaml@main
+    with:
+      helm_repository: ${{ github.repository_owner }}/helm-charts
+      chart_folder: ${{ env.chart }}
+      chart_version: ${{ needs.define_build.output.chart_version }}
+      containers: ${{ needs.define_build.output.containers }} |
+    secrets:
+      RELEASE_CHART_TOKEN: ${{ secrets.RELEASE_CHART_TOKEN }}
 
   update_environment:
     name: Update env
-    needs: [build_container_and_update_chart]
-    uses: Energinet-DataHub/.github/.github/workflows/chart-release-and-update-env.yaml@main
+    needs: [build_container_and_release_chart]
+    #only on: push to main OR PR on 'feature/**' branch
+    if: github.event_name == 'push' && github.ref_name == 'main' || github.event_name == 'pull_request' && startsWith(github.event.pull_request.head.ref, 'feature/')
+    uses: Energinet-DataHub/.github/.github/workflows/update-chart-in-env.yaml@main
     with:
-      chart_folder: chart 
+      env_repository: ${{ github.repository_owner }}/eo-base-environment
+      env_branch: ${{ github.event_name == 'push' && github.ref_name == 'main' || github.event.pull_request.head.ref }}
+      helm_repository: ${{ github.repository_owner }}/helm-charts
+      chart_name: ${{ needs.build_container_and_release_chart.outputs.chart_name }}
+      chart_version: ${{ needs.build_container_and_release_chart.outputs.chart_version }}
     secrets:
-      RELEASE_CHART_TOKEN: ${{ secrets.RELEASE_CHART_TOKEN }}
       UPDATE_ENV_TOKEN: ${{ secrets.UPDATE_ENV_TOKEN }}
