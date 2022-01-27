@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       chart_version: ${{ steps.get_semver.output.semver }}
-      containers: |
+      containers: >-
         [ 
           { deployment_name: "api", dockerfile: "Dockerfile", tag: ${{ steps.get_semver.output.semver }} }
         ]
