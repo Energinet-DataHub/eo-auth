@@ -10,6 +10,10 @@ concurrency:
   group: ${{ github.ref }}
   cancel-in-progress: false
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   py_validate:
     name: Validate python
