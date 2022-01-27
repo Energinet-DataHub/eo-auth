@@ -24,8 +24,8 @@ jobs:
     outputs:
       chart_version: ${{ steps.get_semver.output.semver }}
       containers: >-
-        [ 
-          { deployment_name: "api", dockerfile: "Dockerfile", tag: ${{ steps.get_semver.output.semver }} }
+        [
+          { "deployment_name": "api", "dockerfile": "Dockerfile", "tag": "${{ steps.get_semver.output.semver }}" }
         ]
     steps:
       - name: Get chart version
