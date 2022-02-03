@@ -1,5 +1,4 @@
 # Setup development environment for PyCharm
-**Summary**: in this tutorial, you’ll learn how to install the `pipenv` packaging tool on Windows.
 
 # Install pipenv PyCharm
 
@@ -13,35 +12,12 @@ To install pipenv local to use in PyCharm, the following has to be done:
  
 ---
 ## Install python for Windows
-The Fenris project uses 3.8.10
+
+The Fenris project uses python 3.8.10
 
 Link:  https://www.python.org/downloads/release/python-3810/
 
 Remember to mark the "Add Python to enviroment variables"
-
----
-## Install  Microsoft C++ Build Tools
-
-Microsoft C++ Build Tools is required to run the serpyco package in PyCharm
-
-Link to Tools for Visual Studio 2022
-
-https://visualstudio.microsoft.com/downloads/
-
-or
-
-Direct link;
-
-https://aka.ms/vs/17/release/vs_BuildTools.exe
-
-In the installation, Windows 10 SDK is required, however, problems can occur if the others default are not choosen.  
-
----
-## Install pipenv for Windows
-Link to the metode;
-https://www.pythontutorial.net/python-basics/install-pipenv-windows/
-
-### Prerequisites
 
 Before installing the `pipenv` tool, you need to make sure that Python and `pip` are installed on your computer.
 
@@ -71,6 +47,27 @@ It’ll return something like this:
 pip 20.2.4 from C:\Users\<username>\AppData\Roaming\Python\Python38\site-packages\pip (python 3.8)
 ``` 
 
+---
+## Install  Microsoft C++ Build Tools
+
+Microsoft C++ Build Tools is required to run the serpyco package in PyCharm
+
+Link to Tools for Visual Studio 2022
+
+https://visualstudio.microsoft.com/downloads/
+
+or direct link;
+
+https://aka.ms/vs/17/release/vs_BuildTools.exe
+
+In the installation, Windows 10 SDK is required, however, problems can occur if the others default are not choosen.  
+
+---
+## Install pipenv for Windows
+Link to the tool;
+https://www.pythontutorial.net/python-basics/install-pipenv-windows/
+
+
 ## Install pipenv 
 
 First, use the following command to install `pipenv` tool:
@@ -91,7 +88,7 @@ It’s important to notice that after changing the `PATH` environment variable, 
 Third, type the following command to check if the `pipenv` installed correctly:
 
 ```
-pipenv -h
+pipenv --version
 ```
 
 If it shows the following output, then you’ve successfully installed the `pipenv` tool successfully.
@@ -106,7 +103,7 @@ However, if you see the following message:
 pipenv shell 'pipenv' is not recognized as an internal or external command, operable program or batch file.
 ```
 
-Then you should check step 2 to see if you have already added the paths to the `PATH` environment variable.
+Then you should go back and check if you have already added the paths to the `PATH` environment variable.
 
 ---
 
@@ -134,7 +131,7 @@ pipenv sync --dev
 
 Mark directory "src" and "test" as root for the source and test folder by right-clicking on the folder and select "Mark directory as"  
 
-To run the API and the tests in PyCharm. The " "Run/Debug Configuration" must be set as the following :
+To run the API and the tests in PyCharm. The "Run/Debug Configuration" must be set as the following :
 
 #### auth API 
 In Run/Debug Configuration 
@@ -179,7 +176,7 @@ While the tests are running in PyCharm, docker desktop might not be found due to
 
 To fix this go to: 
 External liberaties 
-\.virtualenvs\eo-auth-<pipenv\>\zLib\site-packages\docker\api\client.py
+\.virtualenvs\eo-auth-<pipenv>\Lib\site-packages\docker\api\client.py
 
 At line 168 change
 

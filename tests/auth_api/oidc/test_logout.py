@@ -3,7 +3,6 @@ Tests specifically for OIDC logout endpoint.
 """
 from uuid import uuid4
 import pytest
-from typing import Any, Dict
 from datetime import datetime, timedelta, timezone
 import requests_mock
 
@@ -13,11 +12,9 @@ from origin.tokens import TokenEncoder
 from origin.models.auth import InternalToken
 
 from auth_api.db import db
-from origin.auth import TOKEN_COOKIE_NAME, TOKEN_HEADER_NAME
+from origin.auth import TOKEN_COOKIE_NAME
 
 from origin.api.testing import CookieTester
-
-
 
 
 from auth_api.config import (
@@ -27,10 +24,33 @@ from auth_api.config import (
     TOKEN_COOKIE_SAMESITE,
 )
 from auth_api.models import DbToken
-
+from auth_api.queries import TokenQuery
 
 
 # -- Fixtures ----------------------------------------------------------------
+@pytest.fixture(scope='function')
+def request_mocker() -> requests_mock:
+    """
+    A request mock which can be used to mock requests responses made to eg. OpenID Connect api endpoints.
+    """
+
+    with requests_mock.Mocker() as m:
+        yield m
+
+
+@pytest.fixture(scope='function')
+def oidc_adapter(request_mocker: requests_mock) -> requests_mock.Adapter:
+    """
+    Mock the oidc endpoint response to return status code 200.
+    """
+    adapter = request_mocker.post(
+        OIDC_API_LOGOUT_URL,
+        text='',
+        status_code=200
+    )
+    return adapter
+
+
 @pytest.fixture(scope='function')
 def id_token() -> str:
     """
@@ -135,23 +155,15 @@ def seeded_session(
     ))
 
     mock_session.commit()
+    return mock_session
 
-
-@pytest.fixture(scope='function')
-def request_mocker() -> requests_mock:
-    """
-    A request mock which can be used to mock requests responses made to eg. OpenID Connect api endpoints.
-    """
-
-    with requests_mock.Mocker() as m:
-        yield m
 
 # -- Tests -------------------------------------------------------------------
 
 
-class TestOidcLogout:
+class TestOIDCEndpoint:
     """
-    Tests the ODIC Logout implementation.
+    Tests the HTTP requests made to the oidcEndpoint.
     """
 
     @pytest.mark.integrationtest
@@ -159,21 +171,14 @@ class TestOidcLogout:
             self,
             client: FlaskClient,
             seeded_session: db.Session,
-            request_mocker: requests_mock,
+            oidc_adapter: requests_mock.Adapter,
             internal_token_encoded: str,
             opaque_token: str,
             id_token: str,
     ):
-        """When logging out, this is tests that the HTTP request payload
+        """
+        When logging out, this is tests that the HTTP request payload
         sent to the OIDC logout endpoint, is actually correct.
-
-        Args:
-            client (FlaskClient): API client
-            seeded_session (db.Session): Seeded database session
-            request_mocker (requests_mock): Used for mocking OIDC logout response
-            internal_token_encoded (str): Encoded external token saved in database
-            opaque_token (str): Token used in the frontend
-            id_token (str): Token used by the OIDC identity provider
         """
 
         # -- Arrange ---------------------------------------------------------
@@ -185,17 +190,9 @@ class TestOidcLogout:
             value=opaque_token,
         )
 
-        # Alter the the OIDC api logout response
-        # to give back a logout success response.
-        adapter = request_mocker.post(
-            OIDC_API_LOGOUT_URL,
-            text='',
-            status_code=200
-        )
-
         # -- Act -------------------------------------------------------------
 
-        client.get(
+        client.post(
             path='/logout',
             headers={
                 'Authorization': 'Bearer: ' + internal_token_encoded
@@ -204,33 +201,109 @@ class TestOidcLogout:
 
         # -- Assert ----------------------------------------------------------
 
-        assert adapter.call_count == 1
+        assert oidc_adapter.call_count == 1
 
         # Make sure that the request payload
         # sent to the OIDC logout url is correct
-        assert adapter.last_request.json() == {'id_token': id_token}
+        assert oidc_adapter.last_request.json() == {'id_token': id_token}
 
-    
     @pytest.mark.integrationtest
+    def test__logout_with_invalid_token__does_not_call_oidc(
+            self,
+            client: FlaskClient,
+            seeded_session: db.Session,
+            oidc_adapter: requests_mock.Adapter,
+            internal_token_encoded: str,
+            opaque_token: str,
+    ):
+        """
+        When logging out with invalid header, this is tests that no HTTP request
+        is sent to the oidc endpoint.
+        """
+
+        # -- Arrange ---------------------------------------------------------
+
+        # Create a cookie required for authentication
+        client.set_cookie(
+            server_name='domain.com',
+            key=TOKEN_COOKIE_NAME,
+            value='non-existent-opaque_token',
+        )
+
+        # -- Act -------------------------------------------------------------
+
+        client.post(
+            path='/logout',
+            headers={
+                'Authorization': 'Bearer: ' + internal_token_encoded
+            }
+        )
+
+        # -- Assert ----------------------------------------------------------
+
+        assert oidc_adapter.call_count == 0
+
+
+class TestDatabaseTokens:
+    """
+    Tests the token read/writes to the database
+    """
+
+    @pytest.mark.integrationtest
+    def test__logout_with_invalid_token__does_not_delete_any_session_tokens(
+            self,
+            client: FlaskClient,
+            seeded_session: db.Session,
+            internal_token_encoded: str,
+            opaque_token: str,
+    ):
+        """
+        When logging out with invalid header, this is tests that no HTTP request
+        is sent to the oidc endpoint.
+        """
+
+        # -- Arrange ---------------------------------------------------------
+
+        # Create a cookie required for authentication
+        client.set_cookie(
+            server_name='domain.com',
+            key=TOKEN_COOKIE_NAME,
+            value='non-existent-opaque_token',
+        )
+
+        # -- Act -------------------------------------------------------------
+
+        client.post(
+            path='/logout',
+            headers={
+                'Authorization': 'Bearer: ' + internal_token_encoded
+            }
+        )
+
+        # -- Assert ----------------------------------------------------------
+
+        query = TokenQuery(seeded_session) \
+            .has_opaque_token(opaque_token)
+
+        assert query.count() == 1
+
+
+
+class TestHTTPResponse:
+    """
+    Tests the HTTP response returned by the endpoint.
+    """
     def test__logout_success__returned_cookie_is_expired(
             self,
             client: FlaskClient,
             seeded_session: db.Session,
-            request_mocker: requests_mock,
+            oidc_adapter: requests_mock.Adapter,
             internal_token_encoded: str,
             opaque_token: str,
-            id_token: str,
     ):
-        """When logging out, this is tests that the new returned cookie
+        """
+        When logging out, this is tests that the new returned cookie
         has expired.
-
-        Args:
-            client (FlaskClient): API client
-            seeded_session (db.Session): Seeded database session
-            request_mocker (requests_mock): Used for mocking OIDC logout response
-            internal_token_encoded (str): Encoded external token saved in database
-            opaque_token (str): Token used in the frontend
-            id_token (str): Token used by the OIDC identity provider
         """
 
         # -- Arrange ---------------------------------------------------------
@@ -242,35 +315,69 @@ class TestOidcLogout:
             value=opaque_token,
         )
 
-        # Alter the the OIDC api logout response
-        # to give back a logout success response.
-        adapter = request_mocker.post(
-            OIDC_API_LOGOUT_URL,
-            text='',
-            status_code=200
-        )
-
         # -- Act -------------------------------------------------------------
 
-        r = client.get(
+        response = client.post(
             path='/logout',
             headers={
                 'Authorization': 'Bearer: ' + internal_token_encoded
             }
         )
 
-        cookies = CookieTester(r.headers) \
-            .assert_has_cookies(TOKEN_COOKIE_NAME) \
-            .assert_cookie(
-                name=TOKEN_COOKIE_NAME,
-                domain=TOKEN_COOKIE_DOMAIN,
-                path='/',
-                http_only=TOKEN_COOKIE_HTTP_ONLY,
-                same_site=TOKEN_COOKIE_SAMESITE,
-                secure=True,
-            )
+        # -- Assert ----------------------------------------------------------
 
-        opaque_token = cookies.get_value(TOKEN_COOKIE_NAME)
+        cookies = CookieTester(response.headers) \
+            .assert_has_cookies(TOKEN_COOKIE_NAME)
+
+        # Get auth cookie
+        auth_cookie = cookies.cookies[TOKEN_COOKIE_NAME]
+
+        assert auth_cookie.value == ''
+        assert auth_cookie['path'] == '/'
+        assert auth_cookie['domain'] == TOKEN_COOKIE_DOMAIN
+        assert auth_cookie['httponly'] == TOKEN_COOKIE_HTTP_ONLY
+        assert auth_cookie['samesite'] == 'Strict'
+        assert auth_cookie['secure'] is True
+
+        # Get time when cookie expires
+        expires_datatime = datetime.strptime(
+            auth_cookie['expires'],
+            "%a, %d %b %Y %H:%M:%S GMT",
+        )
+
+        # Assert that the expires_datetime has in fact expired
+        assert expires_datatime < datetime.now()
+
+    def test__logout_success__returned_correct_body(
+            self,
+            client: FlaskClient,
+            seeded_session: db.Session,
+            oidc_adapter: requests_mock.Adapter,
+            internal_token_encoded: str,
+            opaque_token: str,
+    ):
+        """
+        When logging out, test that the reponse body is correct
+        """
+
+        # -- Arrange ---------------------------------------------------------
+
+        # Create a cookie required for authentication
+        client.set_cookie(
+            server_name='domain.com',
+            key=TOKEN_COOKIE_NAME,
+            value=opaque_token,
+        )
+
+        # -- Act -------------------------------------------------------------
+
+        response = client.post(
+            path='/logout',
+            headers={
+                'Authorization': 'Bearer: ' + internal_token_encoded
+            }
+        )
 
         # -- Assert ----------------------------------------------------------
-        
+
+        assert response.json == {'success': True}
