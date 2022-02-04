@@ -14,7 +14,7 @@ class TestLoginRecordQuery(TestQueryBase):
     def test__has_subject__subject_exits__return_correct_subject(
             self,
             seeded_session: db.Session,
-            user
+            user,
     ):
         """
         TODO
