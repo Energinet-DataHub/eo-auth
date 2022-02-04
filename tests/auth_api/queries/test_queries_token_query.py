@@ -10,7 +10,7 @@ class TestTokenQueries(TestQueryBase):
     def test__has_opaque_token__opaque_token_exits__return_correct_opaque_token(
         self,
         seeded_session: db.Session,
-        opaque_token
+        opaque_token: str,
     ):
         """
         TODO
@@ -86,3 +86,4 @@ class TestTokenQueries(TestQueryBase):
 
         assert fetched_user is None
     """
+    
