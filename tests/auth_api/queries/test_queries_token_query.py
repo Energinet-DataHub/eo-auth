@@ -50,8 +50,8 @@ class TestTokenQueries(TestQueryBase):
     def test__token_is_valid__return_correct_issued_and_expires(
         self,
         seeded_session: db.Session,
-        issued,
-        expires,
+        issued: str,
+        expires: str,
     ):
     """
 
