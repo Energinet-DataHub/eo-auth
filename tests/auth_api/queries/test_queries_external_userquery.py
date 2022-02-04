@@ -19,7 +19,7 @@ class TestExternalUserQueries(TestQueryBase):
         TODO
 
         :param seeded_session: Mocked database session
-        :param user: list of external users
+        :param user: Current user inserted into the test
         """
         # -- Act -------------------------------------------------------------
 
@@ -59,7 +59,7 @@ class TestExternalUserQueries(TestQueryBase):
         TODO
 
         :param seeded_session: Mocked database session
-        :param identity_provider: list of different identity providers
+        :param identity_provider: Current identity provider inserted into the test
         """
         # -- Arrange ---------------------------------------------------------
 
