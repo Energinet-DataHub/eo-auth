@@ -13,13 +13,13 @@ class TestUserQueries(TestQueryBase):
     def test__has_ssn__ssn_exists__return_correct_user(
         self,
         seeded_session: db.Session,
-        user,
+        user: dict,
     ):
         """
         TODO
 
         :param seeded_session: Mocked database session
-        :param user: list of users
+        :param user: Current user inserted into the test
         """
 
         # -- Act -------------------------------------------------------------
@@ -55,13 +55,13 @@ class TestUserQueries(TestQueryBase):
     def test__has_tin__tin_exists__return_correct_user(
         self,
         seeded_session: db.Session,
-        user,
+        user: dict,
     ):
         """
         TODO
 
         :param seeded_session: Mocked database session
-        :param user: list of users
+        :param user: Current user inserted into the test
         """
         # -- Act -------------------------------------------------------------
 
