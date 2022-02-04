@@ -20,7 +20,7 @@ class TestLoginRecordQuery(TestQueryBase):
         TODO
 
         :param seeded_session: Mocked database session
-        :param user: list of users
+        :param user: Current user inserted into the test
         """
 
         # -- Act -------------------------------------------------------------
