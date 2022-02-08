@@ -57,8 +57,8 @@ class TestOidcLogin:
         r = client.get(
             path='/oidc/login',
             query_string={
-                'fe_url': 'https://spam.com/',
-                'return_url': 'https://foobar.com/',
+                'fe_url': 'http://foobar.com/',
+                'return_url': 'http://foobar.com/',
             },
         )
 
@@ -70,8 +70,7 @@ class TestOidcLogin:
         )
 
         assert r.status_code == 200
-        assert actual_state.return_url == 'https://foobar.com/'
-        assert actual_state.fe_url == 'https://spam.com/'
+        assert actual_state.return_url == 'http://foobar.com/'
 
     @pytest.mark.unittest
     def test__omit_parameter_return_url__should_return_status_400(
@@ -87,34 +86,7 @@ class TestOidcLogin:
 
         r = client.get(
             path='/oidc/login',
-            query_string={
-                # Missing parameter "return_url"
-                'fe_url': 'https://spam.com/'
-            },
-        )
-
-        # -- Assert ----------------------------------------------------------
-
-        assert r.status_code == 400
-
-    @pytest.mark.unittest
-    def test__omit_parameter_fe_url__should_return_status_400(
-            self,
-            client: FlaskClient,
-    ):
-        """
-        Omitting the 'fe_url' parameter should result in the endpoint
-        returning HTTP status 400 Bad Request.
-        """
-
-        # -- Act -------------------------------------------------------------
-
-        r = client.get(
-            path='/oidc/login',
-            query_string={
-                # Missing parameter "fe_url"
-                'return_url': 'https://foobar.com/',
-            },
+            query_string={},  # Missing parameter "redirect_uri"
         )
 
         # -- Assert ----------------------------------------------------------

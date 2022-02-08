@@ -97,6 +97,7 @@ class DatabaseController(object):
             )
 
             session.add(user)
+
         return user
 
     def attach_external_user(

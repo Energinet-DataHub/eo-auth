@@ -58,9 +58,9 @@
     // Use 'forwardPorts' to make a list of ports inside the container available locally.
     // "forwardPorts": [],
     // Use 'postCreateCommand' to run commands after the container is created.
-    "postCreateCommand": "pip3 install --upgrade --user pipenv",
+    "postCreateCommand": "pip3 install --upgrade --user pipenv && pipenv update -dev",
     // Use 'postStartCommand' to run commands every time the container is started.
-    "postStartCommand": "pipenv sync --dev && pipenv clean",
+    //"postStartCommand": "",
     // Comment out connect as root instead. More info: https://aka.ms/vscode-remote/containers/non-root.
     "remoteUser": "vscode",
     "features": {
@@ -68,7 +68,6 @@
     },
     "containerEnv": {
         // Fix for TestContainers host pointing to localhost, might be different in some schenarios.
-        "TC_HOST": "172.17.0.1",
-        "PIPENV_VERBOSITY": "-1"
+        "TC_HOST": "172.17.0.1"
     }
 }

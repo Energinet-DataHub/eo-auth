@@ -1,6 +1,5 @@
-import os
-from datetime import timedelta
 from decouple import config
+
 
 # -- General -----------------------------------------------------------------
 
@@ -19,13 +18,6 @@ DEVELOP_URL = f'http://{DEVELOP_HOST}:{DEVELOP_PORT}'
 # Service' public URL
 SERVICE_URL = config('SERVICE_URL', default=DEVELOP_URL)
 
-# Source path
-SOURCE_DIR = os.path.dirname(os.path.abspath(__file__))
-ROOT_DIR = os.path.join(SOURCE_DIR, '..')
-TERMS_MARKDOWN_PATH = os.path.join(ROOT_DIR, 'terms', 'terms.md')
-
-# No. of hours used for the timedelta for internal token expiry
-TOKEN_EXPIRY_DELTA = timedelta(days=1)
 
 # -- Tokens ------------------------------------------------------------------
 
@@ -91,21 +83,6 @@ OIDC_LOGIN_CALLBACK_URL = \
 OIDC_SSN_VALIDATE_CALLBACK_PATH = '/oidc/login/callback/ssn'
 OIDC_SSN_VALIDATE_CALLBACK_URL = \
     f'{SERVICE_URL}{OIDC_SSN_VALIDATE_CALLBACK_PATH}'
-
-# Terms Get URL
-TERMS_PATH = '/terms'
-TERMS_URL = \
-    f'{SERVICE_URL}{TERMS_PATH}'
-
-# Terms accept URL
-TERMS_ACCEPT_PATH = '/terms/accept'
-TERMS_ACCEPT_URL = \
-    f'{SERVICE_URL}{TERMS_ACCEPT_PATH}'
-
-# Create user URL
-CREATE_USER_PATH = '/user/create'
-CREATE_USER_URL = \
-    f'{SERVICE_URL}{CREATE_USER_PATH}'
 
 
 # -- OpenID Connect ----------------------------------------------------------

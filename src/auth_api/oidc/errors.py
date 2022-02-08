@@ -7,7 +7,6 @@ OIDC_ERROR_CODES = {
     'E0': 'Unknown error from Identity Provider',
     'E1': 'User interrupted',
     'E3': 'User failed to verify SSN',
-    'E4': 'User declined terms',
 
     # Happens if an internal error happens at our side
     'E500': 'Internal Server Error',
