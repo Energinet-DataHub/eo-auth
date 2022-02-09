@@ -41,7 +41,7 @@ eo-base-helm-chart:
       env: {}
       image:
         repository: ghcr.io/energinet-datahub/eo-auth-api
-        tag: 0.1.3-pr.75.dce3131
+        tag: 0.1.3-pr.75.6f03f20
   service:
     deployment: api
     type: ClusterIP
