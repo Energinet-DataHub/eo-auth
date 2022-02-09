@@ -21,37 +21,64 @@
     // Set *default* container specific settings.json values on container create.
     "settings": {
         "python.pythonPath": "/home/vscode/.local/share/virtualenvs/eo-auth-imobv-mS/bin/python",
+        "python.defaultInterpreterPath": "/home/vscode/.local/share/virtualenvs/eo-auth-imobv-mS/bin/python",
+        // Linting and intellisense
         "python.analysis.extraPaths": [
             "/workspaces/eo-auth",
             "/workspaces/eo-auth/src",
         ],
-        "python.defaultInterpreterPath": "/home/vscode/.local/share/virtualenvs/eo-auth-imobv-mS/bin/python",
         "python.languageServer": "Pylance",
-        "python.linting.enabled": true,
-        "python.linting.pylintEnabled": true,
         "python.formatting.autopep8Path": "/usr/local/py-utils/bin/autopep8",
         "python.formatting.blackPath": "/usr/local/py-utils/bin/black",
         "python.formatting.yapfPath": "/usr/local/py-utils/bin/yapf",
-        "python.linting.banditPath": "/usr/local/py-utils/bin/bandit",
+        // --- Linters ---
+        "python.linting.enabled": true,
+        // Pylint linter
+        "python.linting.pylintEnabled": true,
+        "python.linting.pylintPath": "/usr/local/py-utils/bin/pylint",
+        // "python.linting.pylintArgs": [
+        //     "--init-hook",
+        //     "import sys; sys.path.append('/workspaces/eo-auth/src')"
+        // ],
+        // flake8 linter
+        "python.linting.flake8Enabled": true,
         "python.linting.flake8Path": "/usr/local/py-utils/bin/flake8",
-        "python.linting.mypyPath": "/usr/local/py-utils/bin/mypy",
+        // pycodestyle linter
+        "python.linting.pycodestyleEnabled": true,
         "python.linting.pycodestylePath": "/usr/local/py-utils/bin/pycodestyle",
+        //pydocstyle linter
+        "python.linting.pydocstyleEnabled": true,
         "python.linting.pydocstylePath": "/usr/local/py-utils/bin/pydocstyle",
-        "python.linting.pylintPath": "/home/vscode/.local/share/virtualenvs/eo-auth-imobv-mS/bin/pylint",
-        "python.linting.pylintArgs": [
-            "--init-hook",
-            "import sys; sys.path.append('/workspaces/eo-auth/src')"
-        ],
+        // misc
+        "python.linting.banditPath": "/usr/local/py-utils/bin/bandit",
+        "python.linting.mypyPath": "/usr/local/py-utils/bin/mypy",
         "python.testing.pytestArgs": [
             "tests"
         ],
         "python.testing.unittestEnabled": false,
-        "python.testing.pytestEnabled": true
+        "python.testing.pytestEnabled": true,
+        // Formatting
+        "files.trimFinalNewlines": true,
+        "files.insertFinalNewline": true,
+        "files.eol": "\n",
+        "editor.rulers": [
+            79
+        ],
+        "python.sortImports.args": [
+            "--settings-path=${workspaceFolder}/setup.cfg"
+        ],
+        "autoDocstring.docstringFormat": "sphinx",
+        // Better theme for vscode
+        "hediet.vscode-drawio.theme": "min",
     },
     // Add the IDs of extensions you want installed when the container is created.
     "extensions": [
         "ms-python.python",
-        "ms-python.vscode-pylance"
+        "ms-python.vscode-pylance",
+        // For drawio
+        "hediet.vscode-drawio",
+        // Generate docstrings
+        "njpwerner.autodocstring"
     ],
     // Use 'forwardPorts' to make a list of ports inside the container available locally.
     // "forwardPorts": [],
