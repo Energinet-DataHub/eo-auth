@@ -15,31 +15,6 @@
             "type": "shell",
             "command": "pipenv update --dev"
         },
-        // {
-        //     "label": "pylint: whole project",
-        //     "type": "shell",
-        //     "command": "pipenv run pylint --msg-template \"{path}:{line}:{column}:{category}:{symbol} - {msg}\" ./tests/ ./src",
-        //     // "command": "pipenv run pylint --msg-template \"{path}:{line}:{column}:{category}:{symbol} - {msg}\" ${relativeFile} ",
-        //     "presentation": {
-        //         "reveal": "never",
-        //         "panel": "shared"
-        //     },
-        //     "problemMatcher": {
-        //         "owner": "python",
-        //         "fileLocation": [
-        //             "relative",
-        //             "${workspaceFolder}"
-        //         ],
-        //         "pattern": {
-        //             "regexp": "^(.+):(\\d+):(\\d+):(\\w+):(.*)$",
-        //             "file": 1,
-        //             "line": 2,
-        //             "column": 3,
-        //             "severity": 4,
-        //             "message": 5
-        //         }
-        //     }
-        // },
         {
             "label": "pylint: whole project",
             "type": "shell",
