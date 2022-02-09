@@ -19,7 +19,6 @@
             "label": "pylint: whole project",
             "type": "shell",
             "command": "pipenv run pylint --msg-template \"{path}:{line}:{column}: {msg_id} {msg}\" ./tests/ ./src",
-            // "command": "pipenv run pylint --msg-template \"{path}:{line}:{column}:{category}:{symbol} - {msg}\" ${relativeFile} ",
             "presentation": {
                 "reveal": "never",
                 "panel": "shared"
@@ -53,7 +52,6 @@
               "panel": "shared",
               "showReuseMessage": false,
               "clear": true,
-            //   "revealProblems": "never"
             },
             "problemMatcher": {
               "owner": "flake8",
