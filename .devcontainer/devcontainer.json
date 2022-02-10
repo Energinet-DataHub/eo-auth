@@ -36,10 +36,6 @@
         // Pylint linter
         "python.linting.pylintEnabled": true,
         "python.linting.pylintPath": "/usr/local/py-utils/bin/pylint",
-        // "python.linting.pylintArgs": [
-        //     "--init-hook",
-        //     "import sys; sys.path.append('/workspaces/eo-auth/src')"
-        // ],
         // flake8 linter
         "python.linting.flake8Enabled": true,
         "python.linting.flake8Path": "/usr/local/py-utils/bin/flake8",
