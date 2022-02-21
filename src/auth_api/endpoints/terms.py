@@ -1,19 +1,28 @@
-import markdown2
+# Standard Library
 import os
+from dataclasses import dataclass
 from tkinter import Tcl
 
-from dataclasses import dataclass
+# Third party
+import markdown2
 
-from origin.api import Endpoint, Context, BadRequest, HttpResponse
+# First party
+from origin.api import (
+    BadRequest,
+    Context,
+    Endpoint,
+    HttpResponse,
+)
 
-from auth_api.db import db
+# Local
 from auth_api.config import TERMS_MARKDOWN_FOLDER
-from auth_api.state import build_failure_url
+from auth_api.db import db
 from auth_api.orchestrator import (
-    state_encoder,
     LoginOrchestrator,
     LoginResponse,
+    state_encoder,
 )
+from auth_api.state import build_failure_url
 
 
 class GetTerms(Endpoint):
