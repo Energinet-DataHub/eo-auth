@@ -12,7 +12,7 @@ from origin.api.testing import (
 
 from auth_api.db import db
 from auth_api.state import AuthState
-from auth_api.config import TERMS_ACCEPT_PATH
+from auth_api.config import TERMS_ACCEPT_PATH, TERMS_PATH
 
 
 class TestTermsAccept:
@@ -235,3 +235,23 @@ class TestTermsDecline:
             name='success',
             value='0',
         )
+
+
+class TestTermsGet:
+    """
+    Tests whether the get returns any content
+    """
+
+    def test__user_gets_terms__should_return_terms(
+        self,
+        client: FlaskClient,
+    ):
+        r = client.get(
+            path=TERMS_PATH
+        )
+
+        assert r.status_code == 200
+
+        assert r.json['headline'] is not None
+
+        assert r.json['terms'] is not None
