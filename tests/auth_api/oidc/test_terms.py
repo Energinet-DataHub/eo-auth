@@ -239,13 +239,15 @@ class TestTermsDecline:
 
 class TestTermsGet:
     """
-    Tests whether the get returns any content
+    Tests whether terms get returns latest terms and success
     """
 
-    def test__user_gets_terms__should_return_terms(
+    def test__user_gets_terms__should_return_latest_terms(
         self,
         client: FlaskClient,
     ):
+        expectedVersion = 'v2'
+
         r = client.get(
             path=TERMS_PATH
         )
@@ -255,3 +257,5 @@ class TestTermsGet:
         assert r.json['headline'] is not None
 
         assert r.json['terms'] is not None
+
+        assert r.json['version'] == expectedVersion

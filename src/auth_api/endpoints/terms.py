@@ -1,11 +1,13 @@
 import markdown2
+import os
+from tkinter import Tcl
 
 from dataclasses import dataclass
 
 from origin.api import Endpoint, Context, BadRequest, HttpResponse
 
 from auth_api.db import db
-from auth_api.config import TERMS_MARKDOWN_PATH
+from auth_api.config import TERMS_MARKDOWN_FOLDER
 from auth_api.state import build_failure_url
 from auth_api.orchestrator import (
     state_encoder,
@@ -29,9 +31,15 @@ class GetTerms(Endpoint):
         """
         Handle HTTP request.
         """
+        file_list = os.listdir(TERMS_MARKDOWN_FOLDER)
+
+        newest_file = Tcl().call('lsort', '-decreasing', file_list)[0]
+
+        filepath = f'{TERMS_MARKDOWN_FOLDER}/{newest_file}'
+        version = newest_file.split('.')[0]
 
         try:
-            with open(TERMS_MARKDOWN_PATH) as file:
+            with open(filepath) as file:
                 markdown_content = file.read()
         except Exception:
             raise RuntimeError("An error occured reading the markdown file")
@@ -41,7 +49,7 @@ class GetTerms(Endpoint):
             return self.Response(
                 headline='Privacy Policy',
                 terms=html,
-                version='0.1',
+                version=version,
             )
         except Exception:
             raise RuntimeError("An error occured converting markdown to html")

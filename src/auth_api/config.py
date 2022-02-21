@@ -22,7 +22,7 @@ SERVICE_URL = config('SERVICE_URL', default=DEVELOP_URL)
 # Source path
 SOURCE_DIR = os.path.dirname(os.path.abspath(__file__))
 ROOT_DIR = os.path.join(SOURCE_DIR, '..')
-TERMS_MARKDOWN_PATH = os.path.join('terms', 'terms.md')
+TERMS_MARKDOWN_FOLDER = config('TERMS_MARKDOWN_FOLDER')
 
 # No. of hours used for the timedelta for internal token expiry
 TOKEN_EXPIRY_DELTA = timedelta(days=1)
