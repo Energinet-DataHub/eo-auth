@@ -246,6 +246,8 @@ class TestTermsGet:
         self,
         client: FlaskClient,
     ):
+        expectedHeadline = 'Privacy Policy'
+        expectedContent = '<h1>Test file 2</h1>\n'
         expectedVersion = 'v2'
 
         r = client.get(
@@ -254,8 +256,8 @@ class TestTermsGet:
 
         assert r.status_code == 200
 
-        assert r.json['headline'] is not None
+        assert r.json['headline'] == expectedHeadline
 
-        assert r.json['terms'] is not None
+        assert r.json['terms'] == expectedContent
 
         assert r.json['version'] == expectedVersion
