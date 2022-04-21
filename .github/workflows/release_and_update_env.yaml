@@ -72,4 +72,6 @@ jobs:
       helm_repository: https://${{ github.repository_owner }}.github.io/helm-charts/
       chart_name: ${{ needs.build_container_and_release_chart.outputs.chart_name }}
       chart_version: ${{ needs.build_container_and_release_chart.outputs.chart_version }}
+    secrets:
       deploy_key: ${{ secrets.DEPLOY_KEY_BASE_ENVIRONMENT }}
+
