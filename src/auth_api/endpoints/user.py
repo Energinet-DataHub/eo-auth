@@ -20,6 +20,7 @@ class GetUserInformation(Endpoint):
     class Response:
         """TODO."""
 
+        subject: str
         tin: str
 
     @db.session()
