@@ -18,3 +18,7 @@ from .terms import (
     GetTerms,
     AcceptTerms,
 )
+
+from .user import (
+    GetUserInformation
+)

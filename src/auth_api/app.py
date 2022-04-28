@@ -24,6 +24,8 @@ from .endpoints import (
     # Terms:
     GetTerms,
     AcceptTerms,
+    # User:
+    GetUserInformation,
 )
 
 
@@ -114,6 +116,14 @@ def create_app() -> Application:
         method='POST',
         path='/terms/accept',
         endpoint=AcceptTerms(),
+    )
+
+    # -- Internal user information -------------------------------------------
+
+    app.add_endpoint(
+        method='GET',
+        path='/user/info',
+        endpoint=GetUserInformation(),
     )
 
     return app
