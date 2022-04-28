@@ -36,6 +36,7 @@ class GetUserInformation(Endpoint):
         """
 
         try:
+            print('headers', context.headers)
             print('internal_token_encoded', context.internal_token_encoded)
             internal_token = context.token_encoder.decode(context.internal_token_encoded)  # noqa 501
             print('internal_token', internal_token)
