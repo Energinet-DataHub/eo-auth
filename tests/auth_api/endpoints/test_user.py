@@ -5,10 +5,8 @@ from auth_api.db import db
 from auth_api.models import DbUser, DbToken
 from datetime import datetime, timezone, timedelta
 from uuid import uuid4
-from typing import Dict, Any
 from origin.models.auth import InternalToken
 from origin.tokens import TokenEncoder
-from authlib.jose import jwt
 
 # # -- fixtures ---------------------------------------------------------------
 
@@ -51,22 +49,6 @@ def expires_datetime() -> datetime:
     """Datetime that indicates when a token will expire."""
 
     return datetime.now(tz=timezone.utc) + timedelta(days=1)
-
-
-@pytest.fixture(scope='function')
-def userinfo_token_encoded(
-        jwk_private: str,
-        userinfo_token: Dict[str, Any],
-) -> str:
-    """Mock userinfo-token from Identity Provider (encoded)."""
-
-    token = jwt.encode(
-        header={'alg': 'RS256'},
-        payload=userinfo_token,
-        key=jwk_private,
-    )
-
-    return token.decode()
 
 
 @pytest.fixture(scope='function')

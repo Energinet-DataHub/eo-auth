@@ -325,7 +325,7 @@ class TestOidcCallbackEndpointsSubjectKnown(OidcCallbackEndpointsSubjectKnownBas
             internal_subject: str,
             return_url: str,
             state_encoded: str,
-            static_id_token: Dict[str, Any],
+            id_token: Dict[str, Any],
     ):
         """
         Create token record in dateabase and correctly set cookie.
@@ -358,12 +358,12 @@ class TestOidcCallbackEndpointsSubjectKnown(OidcCallbackEndpointsSubjectKnownBas
         opaque_token = cookies.get_value(TOKEN_COOKIE_NAME)
 
         issued_expected = datetime \
-            .fromtimestamp(static_id_token['iat']) \
+            .fromtimestamp(id_token['iat']) \
             .astimezone(timezone.utc) \
             .isoformat()
 
         expires_expected = datetime \
-            .fromtimestamp(static_id_token['exp']) \
+            .fromtimestamp(id_token['exp']) \
             .astimezone(timezone.utc) \
             .isoformat()
 
