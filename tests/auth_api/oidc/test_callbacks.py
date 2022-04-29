@@ -12,12 +12,11 @@ import pytest
 from typing import Dict, Any
 from unittest.mock import MagicMock
 from flask.testing import FlaskClient
-from datetime import datetime, timezone
+from datetime import datetime
 
 from origin.tokens import TokenEncoder
 from origin.auth import TOKEN_COOKIE_NAME, TOKEN_HEADER_NAME
 from origin.api.testing import (
-    CookieTester,
     assert_base_url,
     assert_query_parameter,
 )
@@ -28,7 +27,6 @@ from auth_api.queries import LoginRecordQuery
 from auth_api.config import (
     TOKEN_COOKIE_DOMAIN,
     TOKEN_COOKIE_HTTP_ONLY,
-    TOKEN_COOKIE_SAMESITE,
     OIDC_LOGIN_CALLBACK_PATH,
 )
 
@@ -315,70 +313,6 @@ class TestOidcCallbackEndpointsSubjectKnown(OidcCallbackEndpointsSubjectKnownBas
             url=redirect_location,
             name='success',
             value='1',
-        )
-
-    @pytest.mark.integrationtest
-    def test__should_create_token_in_database_and_set_cookie_correctly(
-            self,
-            client: FlaskClient,
-            callback_endpoint_path: str,
-            internal_subject: str,
-            return_url: str,
-            state_encoded: str,
-            id_token: Dict[str, Any],
-    ):
-        """
-        Create token record in dateabase and correctly set cookie.
-
-        :param client: API client
-        :param return_url: Client's return_url
-        :param state_encoded: AuthState, encoded
-        """
-
-        # -- Act -------------------------------------------------------------
-
-        res = client.get(
-            path=callback_endpoint_path,
-            query_string={'state': state_encoded},
-        )
-
-        # -- Assert ----------------------------------------------------------
-
-        cookies = CookieTester(res.headers) \
-            .assert_has_cookies(TOKEN_COOKIE_NAME) \
-            .assert_cookie(
-                name=TOKEN_COOKIE_NAME,
-                domain=TOKEN_COOKIE_DOMAIN,
-                path='/',
-                http_only=TOKEN_COOKIE_HTTP_ONLY,
-                same_site=TOKEN_COOKIE_SAMESITE,
-                secure=True,
-        )
-
-        opaque_token = cookies.get_value(TOKEN_COOKIE_NAME)
-
-        issued_expected = datetime \
-            .fromtimestamp(id_token['iat']) \
-            .astimezone(timezone.utc) \
-            .isoformat()
-
-        expires_expected = datetime \
-            .fromtimestamp(id_token['exp']) \
-            .astimezone(timezone.utc) \
-            .isoformat()
-
-        token_expected = {
-            'issued': issued_expected,
-            'expires': expires_expected,
-            'actor': internal_subject,
-            'subject': internal_subject,
-            'scope': ['meteringpoints.read', 'measurements.read'],
-        }
-
-        assert_token(
-            client=client,
-            opaque_token=opaque_token,
-            expected_token=token_expected,
         )
 
     @pytest.mark.integrationtest
