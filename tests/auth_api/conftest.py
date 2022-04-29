@@ -176,8 +176,43 @@ def ip_token(
     }
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope='function')
 def id_token(
+        token_subject: str,
+        token_idp: str,
+        token_issued: datetime,
+        token_expires: datetime,
+        token_tin: str,
+        token_aud: str,
+        token_transaction_id: str,
+) -> Dict[str, Any]:
+    """Mock ID-token from Identity Provider (unencoded)."""
+
+    return {
+        "iss": "https://pp.netseidbroker.dk/op",
+        "nbf": 1643290895,
+        "iat": int(token_issued.timestamp()),
+        "exp": int(token_expires.timestamp()),
+        "aud": token_aud,
+        "amr": [
+            "nemid.otp"
+        ],
+        "at_hash": "MeVzZfa1Xl_eZZWPK7szfg",
+        "sub": token_subject,
+        "auth_time": int(token_issued.timestamp()),
+        "idp": token_idp,
+        "neb_sid": str(uuid4()),
+        "identity_type": "professional",
+        "transaction_id": token_transaction_id,
+        "idp_environment": "test",
+        "session_expiry": "1643305295",
+        "nemid.cvr": token_tin,
+        "nemid.company_name": "Energinet DataHub A/S ",
+    }
+
+
+@pytest.fixture(scope='session')
+def static_id_token(
         token_subject: str,
         token_idp: str,
         token_issued: datetime,

@@ -162,7 +162,6 @@ def seeded_session(
 class TestUserInformation(object):
     """Test user information."""
 
-    @pytest.mark.unittest
     def test__user_info__returns_unauthorized_without_authorization(
             self,
             client: FlaskClient,
