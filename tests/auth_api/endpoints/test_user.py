@@ -1,6 +1,7 @@
 """Tests user information."""
 import pytest
 from flask.testing import FlaskClient
+from auth_api.db import db
 
 
 class TestUserInformation(object):
@@ -11,7 +12,7 @@ class TestUserInformation(object):
             self,
             client: FlaskClient,
     ):
-        # """When no token provided return 401."""
+        """When no token provided return 401."""
 
         # -- Act -------------------------------------------------------------
 
@@ -26,7 +27,7 @@ class TestUserInformation(object):
             self,
             client: FlaskClient,
     ):
-        # """When invalid token provided return 401."""
+        """When invalid token provided return 401."""
 
         # -- Act -------------------------------------------------------------
 
@@ -40,9 +41,10 @@ class TestUserInformation(object):
     def test__user_info__returns_info_with_correct_request(
             self,
             client: FlaskClient,
-            internal_token_encoded: str
+            internal_token_encoded: str,
+            seeded_session: db.Session,
     ):
-        # """When proper token provided return user info."""
+        """When proper token provided return user info."""
 
         # -- Act -------------------------------------------------------------
 

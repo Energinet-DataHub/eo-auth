@@ -1,9 +1,3 @@
-
-import pytest
-from origin.models.auth import InternalToken
-
-from auth_api.db import db
-from auth_api.models import DbUser, DbExternalUser, DbLoginRecord, DbToken
 from datetime import datetime, timezone
 
 # -- Fixtures ----------------------------------------------------------------
@@ -74,56 +68,3 @@ class TestQueryBase:
     the the user's token in known by the system.
     This setup's all the required users before each test.
     """
-
-    @pytest.fixture(scope='function')
-    def seeded_session(
-        self,
-        mock_session: db.Session,
-        internal_token_encoded: str,
-        id_token: str,
-        subject: str,
-        expires_datetime: datetime,
-        issued_datetime: datetime,
-        opaque_token: str,
-        internal_token: InternalToken,
-    ) -> db.Session:
-        """Mock database with a list of mock-users and mock-external-users."""
-
-        # -- Insert user into database ---------------------------------------
-
-        mock_session.begin()
-
-        for user in USER_LIST:
-            mock_session.add(DbUser(
-                subject=user['subject'],
-                ssn=user['ssn'],
-                tin=user['tin'],
-            ))
-
-        for user in USER_EXTERNAL_LIST:
-            mock_session.add(DbExternalUser(
-                subject=user['subject'],
-                identity_provider=user['identity_provider'],
-                external_subject=user['external_subject'],
-            ))
-
-        for user in USER_LOGIN_RECORD:
-            mock_session.add(DbLoginRecord(
-                subject=user['subject'],
-                created=user['created'],
-            ))
-
-        # -- Insert Token into database ---------------------------------------
-
-        mock_session.add(DbToken(
-            subject=subject,
-            opaque_token=opaque_token,
-            internal_token=internal_token_encoded,
-            issued=issued_datetime,
-            expires=expires_datetime,
-            id_token=id_token,
-        ))
-
-        mock_session.commit()
-
-        yield mock_session
