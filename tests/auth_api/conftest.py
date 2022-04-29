@@ -10,13 +10,13 @@ from typing import Dict, Any
 from unittest.mock import patch
 from authlib.jose import jwt, jwk
 from flask.testing import FlaskClient
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 from testcontainers.postgres import PostgresContainer
 
 from origin.tokens import TokenEncoder
 from origin.sql import SqlEngine, POSTGRES_VERSION
 from origin.models.auth import InternalToken
-from auth_api.models import DbUser, DbExternalUser, DbLoginRecord, DbToken
+
 from origin.encrypt import aes256_encrypt
 
 from auth_api.app import create_app
@@ -27,12 +27,6 @@ from auth_api.config import (
     INTERNAL_TOKEN_SECRET,
     TOKEN_EXPIRY_DELTA,
     STATE_ENCRYPTION_SECRET,
-)
-
-from .queries.query_base import (
-    USER_LIST,
-    USER_EXTERNAL_LIST,
-    USER_LOGIN_RECORD
 )
 
 from .keys import PRIVATE_KEY, PUBLIC_KEY
@@ -182,7 +176,7 @@ def ip_token(
     }
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture(scope='session')
 def id_token(
         token_subject: str,
         token_idp: str,
@@ -277,144 +271,6 @@ def userinfo_token(
         "transaction_id": token_transaction_id,
         "aud": token_aud,
     }
-
-
-@pytest.fixture(scope='function')
-def subject() -> str:
-    """Return the subject."""
-
-    return 'subject'
-
-
-@pytest.fixture(scope='function')
-def actor() -> str:
-    """Return an actor name."""
-
-    return 'actor'
-
-
-@pytest.fixture(scope='function')
-def opaque_token() -> str:
-    """
-    Return Opaque token.
-
-    Return a opaque token, which are the token
-    that are actual visible to the frontend.
-    """
-
-    return str(uuid4())
-
-
-@pytest.fixture(scope='function')
-def issued_datetime() -> datetime:
-    """Datetime that indicates when a token has been issued."""
-
-    return datetime.now(tz=timezone.utc)
-
-
-@pytest.fixture(scope='function')
-def expires_datetime() -> datetime:
-    """Datetime that indicates when a token will expire."""
-
-    return datetime.now(tz=timezone.utc) + timedelta(days=1)
-
-
-@pytest.fixture(scope='function')
-def userinfo_token_encoded(
-        jwk_private: str,
-        userinfo_token: Dict[str, Any],
-) -> str:
-    """Mock userinfo-token from Identity Provider (encoded)."""
-
-    token = jwt.encode(
-        header={'alg': 'RS256'},
-        payload=userinfo_token,
-        key=jwk_private,
-    )
-
-    return token.decode()
-
-
-@pytest.fixture(scope='function')
-def internal_token(
-    subject: str,
-    expires_datetime: datetime,
-    issued_datetime: datetime,
-    actor: str,
-) -> InternalToken:
-    """Return the internal token used within the system itself."""
-
-    return InternalToken(
-        issued=issued_datetime,
-        expires=expires_datetime,
-        actor=actor,
-        subject=subject,
-        scope=['scope1', 'scope2'],
-    )
-
-
-@pytest.fixture(scope='function')
-def internal_token_encoded(
-    internal_token: InternalToken,
-    internal_token_encoder: TokenEncoder[InternalToken],
-) -> str:
-    """Return the internal token in encoded string format."""
-
-    return internal_token_encoder \
-        .encode(internal_token)
-
-
-@pytest.fixture(scope='function')
-def seeded_session(
-    mock_session: _db.Session,
-    internal_token_encoded: str,
-    id_token: str,
-    subject: str,
-    expires_datetime: datetime,
-    issued_datetime: datetime,
-    opaque_token: str,
-    internal_token: InternalToken,
-) -> _db.Session:
-    """Mock database with a list of mock-users and mock-external-users."""
-
-    # -- Insert user into database ---------------------------------------
-
-    mock_session.begin()
-
-    for user in USER_LIST:
-        mock_session.add(DbUser(
-            subject=user['subject'],
-            ssn=user['ssn'],
-            tin=user['tin'],
-        ))
-
-    for user in USER_EXTERNAL_LIST:
-        mock_session.add(DbExternalUser(
-            subject=user['subject'],
-            identity_provider=user['identity_provider'],
-            external_subject=user['external_subject'],
-        ))
-
-    for user in USER_LOGIN_RECORD:
-        mock_session.add(DbLoginRecord(
-            subject=user['subject'],
-            created=user['created'],
-        ))
-
-    # -- Insert Token into database ---------------------------------------
-
-    mock_session.add(DbToken(
-        subject=subject,
-        opaque_token=opaque_token,
-        internal_token=internal_token_encoded,
-        issued=issued_datetime,
-        expires=expires_datetime,
-        id_token=id_token,
-    ))
-
-    mock_session.commit()
-
-    yield mock_session
 
 
 # # -- SQL --------------------------------------------------------------------
