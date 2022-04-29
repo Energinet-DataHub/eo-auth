@@ -16,6 +16,7 @@ from testcontainers.postgres import PostgresContainer
 from origin.tokens import TokenEncoder
 from origin.sql import SqlEngine, POSTGRES_VERSION
 from origin.models.auth import InternalToken
+
 from origin.encrypt import aes256_encrypt
 
 from auth_api.app import create_app
@@ -156,6 +157,22 @@ def token_expires(token_issued: datetime) -> datetime:
 
 
 @pytest.fixture(scope='function')
+def userinfo_token_encoded(
+        jwk_private: str,
+        userinfo_token: Dict[str, Any],
+) -> str:
+    """Mock userinfo-token from Identity Provider (encoded)."""
+
+    token = jwt.encode(
+        header={'alg': 'RS256'},
+        payload=userinfo_token,
+        key=jwk_private,
+    )
+
+    return token.decode()
+
+
+@pytest.fixture(scope='function')
 def ip_token(
     id_token_encoded: str,
     userinfo_token_encoded: str,
@@ -269,22 +286,6 @@ def userinfo_token(
         "transaction_id": token_transaction_id,
         "aud": token_aud,
     }
-
-
-@pytest.fixture(scope='function')
-def userinfo_token_encoded(
-        jwk_private: str,
-        userinfo_token: Dict[str, Any],
-) -> str:
-    """Mock userinfo-token from Identity Provider (encoded)."""
-
-    token = jwt.encode(
-        header={'alg': 'RS256'},
-        payload=userinfo_token,
-        key=jwk_private,
-    )
-
-    return token.decode()
 
 
 # # -- SQL --------------------------------------------------------------------
