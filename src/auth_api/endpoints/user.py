@@ -7,6 +7,7 @@ from origin.api import (
     Endpoint,
     HttpError,
 )
+from origin.api.responses import Unauthorized
 
 # Local
 from auth_api.queries import UserQuery
@@ -14,11 +15,11 @@ from auth_api.db import db
 
 
 class GetUserInformation(Endpoint):
-    """TODO."""
+    """Call to retrieve information about the current user."""
 
     @dataclass
     class Response:
-        """TODO."""
+        """A model of the information related to the current user."""
 
         subject: str
         tin: str
@@ -35,14 +36,8 @@ class GetUserInformation(Endpoint):
         :param context: Context for a single HTTP request.
         """
 
-        try:
-            print('headers', context.headers)
-            print('internal_token_encoded', context.internal_token_encoded)
-            internal_token = context.token_encoder.decode(context.internal_token_encoded)  # noqa 501
-            print('internal_token', internal_token)
-            print('is_valid', internal_token.is_valid)
-        except context.token_encoder.DecodeError as a_a:
-            print('error', a_a)
+        if not context.token:
+            raise Unauthorized()
 
         user = UserQuery(session) \
             .has_subject(context.token.subject) \

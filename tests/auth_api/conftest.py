@@ -10,7 +10,7 @@ from typing import Dict, Any
 from unittest.mock import patch
 from authlib.jose import jwt, jwk
 from flask.testing import FlaskClient
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from testcontainers.postgres import PostgresContainer
 
 from origin.tokens import TokenEncoder
@@ -29,6 +29,7 @@ from auth_api.config import (
 )
 
 from .keys import PRIVATE_KEY, PUBLIC_KEY
+
 
 # -- API ---------------------------------------------------------------------
 
@@ -272,6 +273,46 @@ def userinfo_token(
 
 
 @pytest.fixture(scope='function')
+def subject() -> str:
+    """Return the subject."""
+
+    return 'subject'
+
+
+@pytest.fixture(scope='function')
+def actor() -> str:
+    """Return an actor name."""
+
+    return 'actor'
+
+
+@pytest.fixture(scope='function')
+def opaque_token() -> str:
+    """
+    Return Opaque token.
+
+    Return a opaque token, which are the token
+    that are actual visible to the frontend.
+    """
+
+    return str(uuid4())
+
+
+@pytest.fixture(scope='function')
+def issued_datetime() -> datetime:
+    """Datetime that indicates when a token has been issued."""
+
+    return datetime.now(tz=timezone.utc)
+
+
+@pytest.fixture(scope='function')
+def expires_datetime() -> datetime:
+    """Datetime that indicates when a token will expire."""
+
+    return datetime.now(tz=timezone.utc) + timedelta(days=1)
+
+
+@pytest.fixture(scope='function')
 def userinfo_token_encoded(
         jwk_private: str,
         userinfo_token: Dict[str, Any],
@@ -285,6 +326,35 @@ def userinfo_token_encoded(
     )
 
     return token.decode()
+
+
+@pytest.fixture(scope='function')
+def internal_token(
+    subject: str,
+    expires_datetime: datetime,
+    issued_datetime: datetime,
+    actor: str,
+) -> InternalToken:
+    """Return the internal token used within the system itself."""
+
+    return InternalToken(
+        issued=issued_datetime,
+        expires=expires_datetime,
+        actor=actor,
+        subject=subject,
+        scope=['scope1', 'scope2'],
+    )
+
+
+@pytest.fixture(scope='function')
+def internal_token_encoded(
+    internal_token: InternalToken,
+    internal_token_encoder: TokenEncoder[InternalToken],
+) -> str:
+    """Return the internal token in encoded string format."""
+
+    return internal_token_encoder \
+        .encode(internal_token)
 
 
 # # -- SQL --------------------------------------------------------------------

@@ -1,12 +1,10 @@
-from uuid import uuid4
 
 import pytest
-from origin.tokens import TokenEncoder
 from origin.models.auth import InternalToken
 
 from auth_api.db import db
 from auth_api.models import DbUser, DbExternalUser, DbLoginRecord, DbToken
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timezone
 
 # -- Fixtures ----------------------------------------------------------------
 
@@ -76,76 +74,6 @@ class TestQueryBase:
     the the user's token in known by the system.
     This setup's all the required users before each test.
     """
-
-    @pytest.fixture(scope='function')
-    def id_token(self) -> str:
-        """Return dummy token used for the OpenID Connect identity provider."""
-
-        return 'id-token'
-
-    @pytest.fixture(scope='function')
-    def subject(self) -> str:
-        """Return the subject."""
-
-        return 'subject'
-
-    @pytest.fixture(scope='function')
-    def actor(self) -> str:
-        """Return an actor name."""
-
-        return 'actor'
-
-    @pytest.fixture(scope='function')
-    def opaque_token(self) -> str:
-        """
-        Return Opaque token.
-
-        Return a opaque token, which are the token
-        that are actual visible to the frontend.
-        """
-
-        return str(uuid4())
-
-    @pytest.fixture(scope='function')
-    def issued_datetime(self) -> datetime:
-        """Datetime that indicates when a token has been issued."""
-
-        return datetime.now(tz=timezone.utc)
-
-    @pytest.fixture(scope='function')
-    def expires_datetime(self) -> datetime:
-        """Datetime that indicates when a token will expire."""
-
-        return datetime.now(tz=timezone.utc) + timedelta(days=1)
-
-    @pytest.fixture(scope='function')
-    def internal_token(
-        self,
-        subject: str,
-        expires_datetime: datetime,
-        issued_datetime: datetime,
-        actor: str,
-    ) -> InternalToken:
-        """Return the internal token used within the system itself."""
-
-        return InternalToken(
-            issued=issued_datetime,
-            expires=expires_datetime,
-            actor=actor,
-            subject=subject,
-            scope=['scope1', 'scope2'],
-        )
-
-    @pytest.fixture(scope='function')
-    def internal_token_encoded(
-        self,
-        internal_token: InternalToken,
-        internal_token_encoder: TokenEncoder[InternalToken],
-    ) -> str:
-        """Return the internal token in encoded string format."""
-
-        return internal_token_encoder \
-            .encode(internal_token)
 
     @pytest.fixture(scope='function')
     def seeded_session(
