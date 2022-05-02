@@ -1,8 +1,7 @@
 """Tests specifically for OIDC logout endpoint."""
 
 # Standard Library
-from datetime import datetime, timedelta, timezone
-from uuid import uuid4
+from datetime import datetime, timedelta
 
 # Third party
 import pytest
@@ -47,73 +46,6 @@ def oidc_adapter(request_mocker: requests_mock) -> requests_mock.Adapter:
         status_code=200
     )
     return adapter
-
-
-@pytest.fixture(scope='function')
-def id_token() -> str:
-    """Return a dummy identity provider id_token."""
-
-    return 'id-token'
-
-
-@pytest.fixture(scope='function')
-def subject() -> str:
-    """Return the subject."""
-
-    return 'subject'
-
-
-@pytest.fixture(scope='function')
-def actor() -> str:
-    """Return an actor name."""
-    return 'actor'
-
-
-@pytest.fixture(scope='function')
-def opaque_token() -> str:
-    """Return a opaque token, which are used by the frontend."""
-
-    return str(uuid4())
-
-
-@pytest.fixture(scope='function')
-def issued_datetime() -> datetime:
-    """Datetime that indicates when a token has been issued."""
-
-    return datetime.now(tz=timezone.utc)
-
-
-@pytest.fixture(scope='function')
-def expires_datetime() -> datetime:
-    """Datetime that indicates when an token will expire."""
-    return datetime.now(tz=timezone.utc) + timedelta(days=1)
-
-
-@pytest.fixture(scope='function')
-def internal_token(
-    subject: str,
-    expires_datetime: datetime,
-    issued_datetime: datetime,
-    actor: str,
-) -> InternalToken:
-    """Return the internal token used within the system itself."""
-    return InternalToken(
-        issued=issued_datetime,
-        expires=expires_datetime,
-        actor=actor,
-        subject=subject,
-        scope=['scope1', 'scope2'],
-    )
-
-
-@pytest.fixture(scope='function')
-def internal_token_encoded(
-    internal_token: InternalToken,
-    internal_token_encoder: TokenEncoder[InternalToken],
-) -> str:
-    """Return the internal token in encoded string format."""
-    return internal_token_encoder \
-        .encode(internal_token)
 
 
 @pytest.fixture(scope='function')
