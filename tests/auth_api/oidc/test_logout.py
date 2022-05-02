@@ -1,8 +1,7 @@
 """Tests specifically for OIDC logout endpoint."""
 
 # Standard Library
-from datetime import datetime, timedelta, timezone
-from uuid import uuid4
+from datetime import datetime, timedelta
 
 # Third party
 import pytest
