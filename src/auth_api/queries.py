@@ -30,6 +30,14 @@ class UserQuery(SqlQuery):
         """
         return self.filter(DbUser.tin == tin)
 
+    def has_subject(self, subject: str) -> 'UserQuery':
+        """
+        Check if the subject matches a user in the database.
+
+        :param subject: Internal Id
+        """
+        return self.filter(DbUser.subject == subject)
+
 
 class ExternalUserQuery(SqlQuery):
     """Query DbExternalUser."""
