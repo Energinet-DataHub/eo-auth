@@ -15,12 +15,14 @@ from .config import (
 )
 from .db import db
 from .models import (
+    DbCompany,
     DbExternalUser,
     DbLoginRecord,
     DbToken,
     DbUser,
 )
 from .queries import (
+    CompanyQuery,
     ExternalUserQuery,
     TokenQuery,
     UserQuery,
@@ -187,6 +189,59 @@ class DatabaseController(object):
             subject=user.subject,
             created=datetime.now(tz=timezone.utc),
         ))
+    
+    def create_company(
+            self,
+            session: db.Session,
+            tin: str,
+        ) -> DbCompany:
+        """Create a new company with a given tin
+
+        :param session: Database sessoin
+        :type session: db.Session
+        :param tin: Company tax identification number
+        :type tin: str
+        :return: Created company
+        :rtype: DbCompany
+        """
+
+        company = DbCompany(
+            tin=tin,
+            id=str(uuid4()),
+        )
+
+        session.add(company)
+
+        return company
+    
+    def get_or_create_company(
+        self,
+        session: db.Session,
+        tin: str,
+    ) -> DbCompany:
+        """get or create a company by/with tin. 
+
+        :param session: Database session
+        :type session: db.Session
+        :param tin: Tax identification number
+        :type tin: str
+        :return: Company
+        :rtype: DbCompany
+        """
+        query = CompanyQuery(session)
+
+        query = query.has_tin(tin)
+
+        company = query.one_or_none()
+
+        if company is None:
+            company = self.create_company(
+                session=session,
+                tin=tin,
+            )
+        
+        return company
+
 
     def create_token(
             self,

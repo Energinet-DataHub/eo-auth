@@ -34,6 +34,30 @@ class DbUser(db.ModelBase):
     tin = sa.Column(sa.String(), index=True)
     """Tax identification number."""
 
+class DbCompany(db.ModelBase):
+    """
+    Represents a user logging in the system.
+
+    Users are uniquely identified by their subject.
+    """
+
+    __tablename__ = 'company'
+    __table_args__ = (
+        sa.PrimaryKeyConstraint('subject'),
+        sa.UniqueConstraint('subject'),
+        sa.UniqueConstraint('tin'),
+        sa.CheckConstraint('tin != null'),
+    )
+
+    id = sa.Column(sa.String(), index=True, nullable=False)
+    """Unique id for the Database record."""
+
+    created = sa.Column(sa.DateTime(timezone=True),
+                        nullable=False, server_default=sa.func.now())
+    """Time the company was created."""
+
+    tin = sa.Column(sa.String(), index=True, nullable=False)
+    """Tax identification number."""
 
 class DbExternalUser(db.ModelBase):
     """

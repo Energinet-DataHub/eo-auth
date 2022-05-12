@@ -2,7 +2,33 @@ from sqlalchemy import orm, func, and_
 
 from origin.sql import SqlQuery
 
-from .models import DbUser, DbExternalUser, DbToken, DbLoginRecord
+from .models import DbCompany, DbUser, DbExternalUser, DbToken, DbLoginRecord
+
+class CompanyQuery(SqlQuery):
+    """Query DbCompany."""
+    
+    def _get_base_query(self) -> orm.Query:
+        """Override function used in base class."""
+
+        return self.session.query(DbCompany)
+    
+    def has_tin(self, tin: str) -> 'CompanyQuery':
+        """
+        Check if the company's tin matches a tin in the database.
+
+        :param tin: Tax Identification Number
+        """
+
+        return self.filter(DbCompany.tin == tin)
+    
+    def has_id(self, tin: str) -> 'CompanyQuery':
+        """
+        Check if the company's id matches a id in the database.
+
+        :param id: Unique company id
+        """
+
+        return self.filter(DbCompany.id == id)
 
 
 class UserQuery(SqlQuery):
