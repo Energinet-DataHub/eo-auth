@@ -28,7 +28,7 @@ from auth_api.config import (
 )
 from auth_api.controller import db_controller
 from auth_api.db import db
-from auth_api.models import DbUser
+from auth_api.models import DbCompany, DbUser
 from auth_api.user import create_or_get_user
 from auth_api.state import AuthState
 
@@ -71,11 +71,13 @@ class LoginOrchestrator:
         self,
         state: AuthState,
         session: db.Session,
-        user: DbUser = None
+        user: Optional[DbUser],
+        company: Optional[DbCompany],
     ) -> None:
         self.state = state
         self.session = session
         self.user = user
+        self.company = company
 
     def redirect_next_step(
         self
@@ -192,6 +194,13 @@ class LoginOrchestrator:
         Register user login after completed registration and create http only
         cookie.
         """
+
+        subject = self.user.subject
+
+        # Check if user logged in on behalf of a company
+        if self.company:
+            subject = self.company.id
+
         db_controller.register_user_login(
             session=self.session,
             user=self.user,
@@ -203,7 +212,8 @@ class LoginOrchestrator:
             session=self.session,
             issued=issued,
             expires=issued + TOKEN_EXPIRY_DELTA,
-            subject=self.user.subject,
+            actor=self.user.subject,
+            subject=subject,
             scope=TOKEN_DEFAULT_SCOPES,
             id_token=aes256_decrypt(
                 self.state.id_token,

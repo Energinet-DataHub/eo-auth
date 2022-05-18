@@ -1,5 +1,6 @@
 # Standard Library
 from datetime import datetime, timezone
+from optparse import Option
 from typing import List, Optional
 from uuid import uuid4
 
@@ -78,6 +79,27 @@ class DatabaseController(object):
 
         if external_user:
             return external_user.user
+
+    def get_company_by_tin(
+        self,
+        session: db.Session,
+        tin: str
+    ) -> Optional[DbCompany]:
+        """
+        Get a company by tin.
+
+        :param session: Database session
+        :type session: db.Session
+        :param tin: company tin (Tax Identification Number)
+        :type tin: str
+        :return: Company
+        :rtype: Optional[DbCompany]
+        """
+        company = CompanyQuery(session) \
+            .has_tin(tin) \
+            .one_or_none()
+
+        return company
 
     def get_or_create_user(
             self,
@@ -247,6 +269,7 @@ class DatabaseController(object):
             session: db.Session,
             issued: datetime,
             expires: datetime,
+            actor: str,
             subject: str,
             id_token: str,
             scope: List[str],
@@ -264,6 +287,7 @@ class DatabaseController(object):
         :param issued: Time when token is issued
         :param expires: Time when token expires
         :param subject: The subject to create token for
+        :param actor: The actor who is logged in on behalf of subject
         :param id_token: ID token from Identity Provider, raw/encoded
         :param scope: The scopes to grant
         :returns: Opaque token
@@ -271,7 +295,7 @@ class DatabaseController(object):
         internal_token = InternalToken(
             issued=issued,
             expires=expires,
-            actor=subject,
+            actor=actor,
             subject=subject,
             scope=scope,
         )

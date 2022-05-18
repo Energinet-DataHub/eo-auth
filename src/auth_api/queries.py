@@ -63,7 +63,6 @@ class CompanyQuery(SqlQuery):
         """
         return self.filter(DbCompany.tin == tin)
 
-
 class ExternalUserQuery(SqlQuery):
     """Query DbExternalUser."""
 
