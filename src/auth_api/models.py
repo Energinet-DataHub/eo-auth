@@ -1,9 +1,35 @@
 # Third party
+from typing import List
 import sqlalchemy as sa
 from sqlalchemy.orm import relationship
 
 # Local
 from .db import db
+
+
+class DbUserCompany(db.ModelBase):
+    """
+    Assosiation table, defining relationship betwen users and companies.
+    """
+    __tablename__ = 'user_company'
+    __table_args__ = (
+        sa.PrimaryKeyConstraint('company_id', 'user_id'),
+        sa.UniqueConstraint('company_id', 'user_id'),
+    )
+
+    company_id = sa.Column(
+        sa.String(),
+        sa.ForeignKey('company.id'),
+        primary_key=True,
+    )
+    """Unique id for the company."""
+
+    user_id = sa.Column(
+        sa.String(),
+        sa.ForeignKey('user.subject'),
+        primary_key=True,
+    )
+    """Unique id for the user."""
 
 
 class DbUser(db.ModelBase):
@@ -34,17 +60,24 @@ class DbUser(db.ModelBase):
     tin = sa.Column(sa.String(), index=True)
     """Tax identification number."""
 
+    companies: List['DbCompany'] = relationship(
+        'DbCompany',
+        secondary='user_company',
+        back_populates='users',
+    )
+
+
 class DbCompany(db.ModelBase):
     """
-    Represents a user logging in the system.
+    Represents a company logging in the system.
 
-    Users are uniquely identified by their subject.
+    Companies are uniquely identified by the id.
     """
 
     __tablename__ = 'company'
     __table_args__ = (
-        sa.PrimaryKeyConstraint('subject'),
-        sa.UniqueConstraint('subject'),
+        sa.PrimaryKeyConstraint('id'),
+        sa.UniqueConstraint('id'),
         sa.UniqueConstraint('tin'),
         sa.CheckConstraint('tin != null'),
     )
@@ -58,6 +91,13 @@ class DbCompany(db.ModelBase):
 
     tin = sa.Column(sa.String(), index=True, nullable=False)
     """Tax identification number."""
+
+    users: List['DbUser'] = relationship(
+        'DbUser',
+        secondary='user_company',
+        back_populates='companies',
+    )
+
 
 class DbExternalUser(db.ModelBase):
     """
