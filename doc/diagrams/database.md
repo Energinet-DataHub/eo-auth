@@ -25,6 +25,8 @@ erDiagram
         int tin "Tax Identification Number"
     }
 
+    user }o--o{ company : "Can have"
+
     login_record {
         string id PK "Unique login_record id"
         string subject "Unique user id"

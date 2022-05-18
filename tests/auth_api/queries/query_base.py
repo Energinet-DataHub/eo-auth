@@ -19,21 +19,18 @@ from datetime import datetime, timezone, timedelta
 DB_USER_1 = {
     "subject": 'SUBJECT_1',
     "ssn": "SSN_1",
-    "tin": 'TIN_1',
     "companies": [],
 }
 
 DB_USER_2 = {
     "subject": 'SUBJECT_2',
     "ssn": "SSN_2",
-    "tin": 'TIN_2',
     "companies": [],
 }
 
 DB_USER_3 = {
     "subject": 'SUBJECT_3',
     "ssn": "SSN_3",
-    "tin": 'TIN_3',
     "companies": [],
 }
 
@@ -205,7 +202,6 @@ class TestQueryBase:
             user['subject']: DbUser(
                 subject=user['subject'],
                 ssn=user['ssn'],
-                tin=user['tin'],
             )
             for user in USER_LIST
         }

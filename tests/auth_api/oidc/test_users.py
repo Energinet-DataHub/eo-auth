@@ -65,7 +65,6 @@ class TestCreateUser:
 
         mock_session.add(DbUser(
             subject=internal_subject,
-            tin=token_tin,
         ))
 
         mock_session.add(DbExternalUser(
@@ -102,7 +101,7 @@ class TestCreateUser:
 
         # -- Act --------------------------------------------------------------
 
-        create_or_get_user(
+        user = create_or_get_user(
             session=mock_session,
             state=state,
         )
@@ -110,7 +109,7 @@ class TestCreateUser:
         # -- Assert -----------------------------------------------------------
 
         assert UserQuery(mock_session) \
-            .has_tin(token_tin) \
+            .has_subject(user.subject) \
             .count() == 1
 
     @pytest.mark.integrationtest
@@ -120,6 +119,7 @@ class TestCreateUser:
         token_tin: str,
         token_idp: str,
         token_subject: str,
+        internal_subject: str,
         id_token_encrypted: str,
     ):
         """
@@ -143,19 +143,22 @@ class TestCreateUser:
 
         # Assert that tests if we already have a user in the db
         assert UserQuery(seeded_session) \
-            .has_tin(token_tin) \
+            .has_subject(internal_subject) \
             .count() == 1
 
         # Attempt to create a user
-        create_or_get_user(
+        user = create_or_get_user(
             session=seeded_session,
             state=state,
         )
 
         # Assert we have not added an additional user
         assert UserQuery(seeded_session) \
-            .has_tin(token_tin) \
+            .has_subject(user.subject) \
             .count() == 1
+
+        # Asser that it returns the existing user
+        assert internal_subject == user.subject
 
     @pytest.mark.integrationtest
     def test__create_user__when_terms_have_not_been_accepted__it_should_not_insert_a_user(  # noqa: E501
@@ -197,5 +200,4 @@ class TestCreateUser:
 
         # Querying the db to make sure a user has not been created
         assert UserQuery(mock_session) \
-            .has_tin(token_tin) \
             .count() == 0

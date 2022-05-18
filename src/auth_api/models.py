@@ -44,7 +44,7 @@ class DbUser(db.ModelBase):
         sa.PrimaryKeyConstraint('subject'),
         sa.UniqueConstraint('subject'),
         sa.UniqueConstraint('ssn'),
-        sa.CheckConstraint('ssn != NULL OR tin != null'),
+        sa.CheckConstraint('ssn != NULL'),
     )
 
     subject = sa.Column(sa.String(), index=True, nullable=False)
@@ -56,9 +56,6 @@ class DbUser(db.ModelBase):
 
     ssn = sa.Column(sa.String(), index=True)
     """Social security number, encrypted."""
-
-    tin = sa.Column(sa.String(), index=True)
-    """Tax identification number."""
 
     companies: List['DbCompany'] = relationship(
         'DbCompany',
@@ -138,7 +135,7 @@ class DbExternalUser(db.ModelBase):
     """
 
     # Relationships
-    user = relationship('DbUser', foreign_keys=[subject], uselist=False)
+    user: DbUser = relationship('DbUser', foreign_keys=[subject], uselist=False)
 
 
 class DbLoginRecord(db.ModelBase):

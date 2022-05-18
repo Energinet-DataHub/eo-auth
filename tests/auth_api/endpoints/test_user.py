@@ -18,7 +18,6 @@ def seeded_session(
     issued_datetime: datetime,
     opaque_token: str,
     ssn: str,
-    tin: str,
 ) -> db.Session:
     """Mock database with a list of mock-users and mock-external-users."""
 
@@ -29,7 +28,6 @@ def seeded_session(
     mock_session.add(DbUser(
         subject=subject,
         ssn=ssn,
-        tin=tin,
     ))
 
     # -- Insert Token into database ---------------------------------------

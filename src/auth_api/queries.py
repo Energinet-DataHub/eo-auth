@@ -90,6 +90,18 @@ class ExternalUserQuery(SqlQuery):
 
         return self.filter(DbExternalUser.identity_provider == idp)
 
+    def has_user_with_id(self, user_id: str) -> 'ExternalUserQuery':
+        """
+        Check if external_user has internal user with id in the database.
+
+        # TODO TEST THIS QUERY
+
+        :param user_id: unique user id
+        :type user_id: str
+        """
+        # TODO: change "user.subject" to "user.id" when DbUser is updated
+        return self.filter(DbExternalUser.user.subject == user_id)
+
 
 class LoginRecordQuery(SqlQuery):
     """Query DbLoginRecord."""

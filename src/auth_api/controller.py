@@ -83,7 +83,6 @@ class DatabaseController(object):
             self,
             session: db.Session,
             ssn: Optional[str] = None,
-            tin: Optional[str] = None,
     ) -> DbUser:
         """
         Identify a subject.
@@ -102,8 +101,6 @@ class DatabaseController(object):
 
         if ssn is not None:
             query = query.has_ssn(ssn_encrypted)
-        if tin is not None:
-            query = query.has_tin(tin)
 
         user = query.one_or_none()
 
@@ -111,10 +108,10 @@ class DatabaseController(object):
             user = DbUser(
                 subject=str(uuid4()),
                 ssn=ssn_encrypted,
-                tin=tin,
             )
 
             session.add(user)
+            session.commit()
 
         return user
 
@@ -150,6 +147,7 @@ class DatabaseController(object):
                 identity_provider=identity_provider,
                 external_subject=external_subject
             ))
+            session.commit()
 
     def create_user(
             self,
@@ -171,6 +169,7 @@ class DatabaseController(object):
         )
 
         session.add(user)
+        session.commit()
 
         return user
 
@@ -189,12 +188,12 @@ class DatabaseController(object):
             subject=user.subject,
             created=datetime.now(tz=timezone.utc),
         ))
-    
+
     def create_company(
-            self,
-            session: db.Session,
-            tin: str,
-        ) -> DbCompany:
+        self,
+        session: db.Session,
+        tin: str,
+    ) -> DbCompany:
         """Create a new company with a given tin
 
         :param session: Database sessoin
@@ -211,15 +210,16 @@ class DatabaseController(object):
         )
 
         session.add(company)
+        session.commit()
 
         return company
-    
+
     def get_or_create_company(
         self,
         session: db.Session,
         tin: str,
     ) -> DbCompany:
-        """get or create a company by/with tin. 
+        """get or create a company by/with tin.
 
         :param session: Database session
         :type session: db.Session
@@ -239,9 +239,8 @@ class DatabaseController(object):
                 session=session,
                 tin=tin,
             )
-        
-        return company
 
+        return company
 
     def create_token(
             self,
