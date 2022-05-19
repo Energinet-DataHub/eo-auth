@@ -63,6 +63,7 @@ class CompanyQuery(SqlQuery):
         """
         return self.filter(DbCompany.tin == tin)
 
+
 class ExternalUserQuery(SqlQuery):
     """Query DbExternalUser."""
 
@@ -99,7 +100,7 @@ class ExternalUserQuery(SqlQuery):
         :type user_id: str
         """
         # TODO: change "user.subject" to "user.id" when DbUser is updated
-        return self.filter(DbExternalUser.user.subject == user_id)
+        return self.filter(DbExternalUser.user.has(DbUser.subject == user_id))
 
 
 class LoginRecordQuery(SqlQuery):
