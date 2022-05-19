@@ -50,7 +50,7 @@ To create a database running postgress using docker run:
 #   Database: auth
 #   password: 1234
 #   username: postgres
-docker run --name some-postgre s -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=1234 -e POSTGRES_DB=auth -d postgres
+docker run --name some-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=1234 -e POSTGRES_DB=auth -d postgres
 ```
 
 Before creating a new revision, the local database needs to apply all existing database migrations.
