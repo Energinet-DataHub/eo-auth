@@ -183,7 +183,10 @@ class OpenIDCallbackEndpoint(Endpoint):
             identity_provider=oidc_token.provider,
         )
 
-        company = db_controller.get_company_by_tin(oidc_token.tin)
+        company = db_controller.get_company_by_tin(
+            session=session,
+            tin=oidc_token.tin,
+        )
 
         orchestrator = LoginOrchestrator(
             session=session,

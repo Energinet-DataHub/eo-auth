@@ -71,8 +71,8 @@ class LoginOrchestrator:
         self,
         state: AuthState,
         session: db.Session,
-        user: Optional[DbUser],
-        company: Optional[DbCompany],
+        user: Optional[DbUser] = None,
+        company: Optional[DbCompany] = None,
     ) -> None:
         self.state = state
         self.session = session
