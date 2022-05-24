@@ -8,9 +8,8 @@ from .db import db
 
 
 class DbUserCompany(db.ModelBase):
-    """
-    Assosiation table, defining relationship betwen users and companies.
-    """
+    """Assosiation table, defining relationship betwen users and companies."""
+
     __tablename__ = 'user_company'
     __table_args__ = (
         sa.PrimaryKeyConstraint('company_id', 'user_id'),
@@ -135,7 +134,11 @@ class DbExternalUser(db.ModelBase):
     """
 
     # Relationships
-    user: DbUser = relationship('DbUser', foreign_keys=[subject], uselist=False)
+    user: DbUser = relationship(
+        'DbUser',
+        foreign_keys=[subject],
+        uselist=False
+    )
 
 
 class DbLoginRecord(db.ModelBase):

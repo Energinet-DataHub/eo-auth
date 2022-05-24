@@ -1,6 +1,5 @@
 # Standard Library
 from datetime import datetime, timezone
-from optparse import Option
 from typing import List, Optional
 from uuid import uuid4
 
@@ -216,7 +215,8 @@ class DatabaseController(object):
         session: db.Session,
         tin: str,
     ) -> DbCompany:
-        """Create a new company with a given tin
+        """
+        Create a new company with a given tin.
 
         :param session: Database sessoin
         :type session: db.Session
@@ -241,7 +241,7 @@ class DatabaseController(object):
         session: db.Session,
         tin: str,
     ) -> DbCompany:
-        """get or create a company by/with tin.
+        """Get or create a company by/with tin.
 
         :param session: Database session
         :type session: db.Session
@@ -270,6 +270,20 @@ class DatabaseController(object):
         company: DbCompany,
         user: DbUser,
     ):
+        """
+        Add a user to a company and add the company to the user.
+
+        Since users and companies have a "many to many" relationship, this
+        method lets you add a user to a company. This also adds the company
+        to the user.
+
+        :param session: Database session
+        :type session: db.Session
+        :param company: Company to have the user
+        :type company: DbCompany
+        :param user: The user to be added to the company
+        :type user: DbUser
+        """
         if user not in company.users:
             company.users.append(user)
             session.commit()

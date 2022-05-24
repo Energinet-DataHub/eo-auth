@@ -12,12 +12,9 @@ from flask.testing import FlaskClient
 from origin.api.testing import assert_base_url
 from origin.encrypt import aes256_decrypt
 from origin.tokens import TokenEncoder
-from sqlalchemy import true
 
 # Local
 from auth_api.config import (
-    DATASYNC_BASE_URL,
-    DATASYNC_CREATE_RELATIONS_PATH,
     OIDC_LOGIN_CALLBACK_PATH,
     STATE_ENCRYPTION_SECRET,
 )
@@ -120,6 +117,15 @@ class TestOidcLoginCallbackSubjectUnknown:
 
 
 class TestOidcLoginCallbackCreateRelations:
+    """
+    Test that the callback endpoint creates relations.
+
+    One of the responsibilities of the LoginCallback endpoint is to
+    tell the datasync service to make relations between a user and the user's
+    meteringpoints. This is done by calling the datasync service. This section
+    tests that this endpoint actually calls datasync as expected.
+    """
+
     @pytest.mark.integrationtest
     def test__user_does_not_exist__should_call_datasync_create_relations_endpoint(  # noqa: E501
         self,
@@ -218,7 +224,6 @@ class TestOidcLoginCallbackCreateRelations:
         mock_get_jwk.return_value = jwk_public
         mock_fetch_token.return_value = ip_token
 
-
         # -- Act --------------------------------------------------------------
 
         client.get(
@@ -244,7 +249,7 @@ class TestOidcLoginCallbackCreateRelations:
         ip_token: Dict[str, Any],
     ):
         """
-        Company does not exist and should call datasync create relations endpoint.
+        Company do not exist and should call datasync create relation endpoint.
 
         During creating of the user and company the endpoint should, a new
         company should be created in the database.
@@ -269,7 +274,6 @@ class TestOidcLoginCallbackCreateRelations:
 
         mock_get_jwk.return_value = jwk_public
         mock_fetch_token.return_value = ip_token
-
 
         # -- Act --------------------------------------------------------------
 

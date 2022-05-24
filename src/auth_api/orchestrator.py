@@ -1,10 +1,7 @@
 # Standard Library
-from ast import Dict
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
-from random import random
 from typing import Optional
-from xmlrpc.client import Boolean
 
 # First party
 from origin.api import (
@@ -16,7 +13,6 @@ from origin.auth import TOKEN_COOKIE_NAME
 from origin.encrypt import aes256_decrypt
 from origin.tokens import TokenEncoder
 from origin.tools import url_append
-from requests import request
 import requests
 
 # Local
@@ -306,7 +302,7 @@ class LoginOrchestrator:
             secure=True,
         )
 
-    def invalidate_login(self) -> Boolean:
+    def invalidate_login(self) -> bool:
         """Invalidate an initiated login that is persistented only in state."""
         if self.state is not None and self.state.id_token is not None:
             oidc_backend.logout(self.state.id_token)

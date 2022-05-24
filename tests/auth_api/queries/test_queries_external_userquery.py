@@ -1,8 +1,15 @@
+# Third party
 import pytest
 
+# First party
+from tests.auth_api.queries.query_base import (
+    USER_EXTERNAL_LIST,
+    TestQueryBase,
+)
+
+# Local
 from auth_api.db import db
 from auth_api.queries import ExternalUserQuery
-from .query_base import USER_LIST, TestQueryBase, USER_EXTERNAL_LIST
 
 
 class TestExternalUserQueries(TestQueryBase):
@@ -95,6 +102,14 @@ class TestExternalUserQueries(TestQueryBase):
             seeded_session: db.Session,
             external_user: dict,
     ):
+        """
+        User with id exists and external user exists return correct users.
+
+        :param seeded_session: Database Session
+        :type seeded_session: db.Session
+        :param external_user: External user
+        :type external_user: dict
+        """
         # -- Arrange ---------------------------------------------------------
 
         seeded_users = [

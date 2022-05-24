@@ -439,6 +439,7 @@ def datasync_adapter(request_mocker: requests_mock) -> requests_mock.Adapter:
     )
     return adapter
 
+
 @pytest.fixture(scope='function')
 def oidc_adapter(request_mocker: requests_mock) -> requests_mock.Adapter:
     """Mock the oidc endpoint response to return status code 200."""
