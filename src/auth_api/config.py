@@ -116,4 +116,4 @@ DATASYNC_BASE_URL = os.environ.get('DATASYNC_BASE_URL', 'http://eo-data-sync')
 # This is so that it matches up with the documentation at:
 # github.com/Energinet-DataHub/energy-origin/blob/main/doc/api/datasync.md
 DATASYNC_CREATE_RELATIONS_PATH = \
-    os.environ.get('DATASYNC_CREATE_RELATIONS_PATH', '/Relation/relations')
+    os.environ.get('DATASYNC_CREATE_RELATIONS_PATH', '/relations')
