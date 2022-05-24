@@ -2,10 +2,10 @@
 from typing import Any, Dict
 from unittest.mock import MagicMock
 from uuid import uuid4
-
+from auth_api.config import DATASYNC_BASE_URL, DATASYNC_CREATE_RELATIONS_PATH
 # Third party
 import pytest
-
+import requests_mock
 # Local
 from auth_api.db import db
 from auth_api.endpoints import AuthState
@@ -14,6 +14,19 @@ from auth_api.queries import UserQuery
 from auth_api.user import create_or_get_user
 
 # -- Tests --------------------------------------------------------------------
+
+
+@pytest.fixture(scope='function')
+def datasync_adapter(request_mocker: requests_mock) -> requests_mock.Adapter:
+    """Mock the datasync endpoint response to return status code 200."""
+    url = f'{DATASYNC_BASE_URL}{DATASYNC_CREATE_RELATIONS_PATH}'
+
+    adapter = request_mocker.post(
+        url,
+        text='',
+        status_code=200
+    )
+    return adapter
 
 
 class TestCreateUser:

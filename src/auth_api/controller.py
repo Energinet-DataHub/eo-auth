@@ -264,6 +264,16 @@ class DatabaseController(object):
 
         return company
 
+    def attach_user_to_company(
+        self,
+        session: db.Session,
+        company: DbCompany,
+        user: DbUser,
+    ):
+        if user not in company.users:
+            company.users.append(user)
+            session.commit()
+
     def create_token(
             self,
             session: db.Session,
