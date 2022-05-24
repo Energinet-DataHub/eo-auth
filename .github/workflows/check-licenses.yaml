@@ -1,0 +1,14 @@
+name: Check Licenses - auth
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  check-licenses:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Check license
+      uses: Energinet-DataHub/.github/.github/actions/python-pypi-check-license@main
