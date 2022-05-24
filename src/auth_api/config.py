@@ -112,4 +112,4 @@ OIDC_API_LOGOUT_URL = f'{OIDC_AUTHORITY_URL}/api/v1/session/logout'
 # -- eo-datasync -------------------------------------------------------------
 DATASYNC_BASE_URL = os.environ.get('DATASYNC_BASE_URL', 'http://eo-data-sync/')
 DATASYNC_CREATE_RELATIONS_PATH = \
-    os.environ.get('DATASYNC_CREATE_RELATIONS_PATH', '/relations')
+    os.environ.get('DATASYNC_CREATE_RELATIONS_PATH', '/Relation/relations')

@@ -244,7 +244,7 @@ class LoginOrchestrator:
 
         if response.status_code != 200:
             print(f"Failed to create releation for user {self.user.subject}")
-            print(f"'{uri}' Responded with status code: {response.status_code}")
+            print(f"'{uri}' Responded with status code {response.status_code}")
         else:
             print(f"created releation for user {self.user.subject}")
 
