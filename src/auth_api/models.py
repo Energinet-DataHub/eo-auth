@@ -1,9 +1,34 @@
 # Third party
+from typing import List
 import sqlalchemy as sa
 from sqlalchemy.orm import relationship
 
 # Local
 from .db import db
+
+
+class DbUserCompany(db.ModelBase):
+    """Assosiation table, defining relationship betwen users and companies."""
+
+    __tablename__ = 'user_company'
+    __table_args__ = (
+        sa.PrimaryKeyConstraint('company_id', 'user_id'),
+        sa.UniqueConstraint('company_id', 'user_id'),
+    )
+
+    company_id = sa.Column(
+        sa.String(),
+        sa.ForeignKey('company.id'),
+        primary_key=True,
+    )
+    """Unique id for the company."""
+
+    user_id = sa.Column(
+        sa.String(),
+        sa.ForeignKey('user.subject'),
+        primary_key=True,
+    )
+    """Unique id for the user."""
 
 
 class DbUser(db.ModelBase):
@@ -18,7 +43,7 @@ class DbUser(db.ModelBase):
         sa.PrimaryKeyConstraint('subject'),
         sa.UniqueConstraint('subject'),
         sa.UniqueConstraint('ssn'),
-        sa.CheckConstraint('ssn != NULL OR tin != null'),
+        sa.CheckConstraint('ssn != NULL'),
     )
 
     subject = sa.Column(sa.String(), index=True, nullable=False)
@@ -31,8 +56,43 @@ class DbUser(db.ModelBase):
     ssn = sa.Column(sa.String(), index=True)
     """Social security number, encrypted."""
 
-    tin = sa.Column(sa.String(), index=True)
+    companies: List['DbCompany'] = relationship(
+        'DbCompany',
+        secondary='user_company',
+        back_populates='users',
+    )
+
+
+class DbCompany(db.ModelBase):
+    """
+    Represents a company logging in the system.
+
+    Companies are uniquely identified by the id.
+    """
+
+    __tablename__ = 'company'
+    __table_args__ = (
+        sa.PrimaryKeyConstraint('id'),
+        sa.UniqueConstraint('id'),
+        sa.UniqueConstraint('tin'),
+        sa.CheckConstraint('tin != null'),
+    )
+
+    id = sa.Column(sa.String(), index=True, nullable=False)
+    """Unique id for the Database record."""
+
+    created = sa.Column(sa.DateTime(timezone=True),
+                        nullable=False, server_default=sa.func.now())
+    """Time the company was created."""
+
+    tin = sa.Column(sa.String(), index=True, nullable=False)
     """Tax identification number."""
+
+    users: List['DbUser'] = relationship(
+        'DbUser',
+        secondary='user_company',
+        back_populates='companies',
+    )
 
 
 class DbExternalUser(db.ModelBase):
@@ -74,7 +134,11 @@ class DbExternalUser(db.ModelBase):
     """
 
     # Relationships
-    user = relationship('DbUser', foreign_keys=[subject], uselist=False)
+    user: DbUser = relationship(
+        'DbUser',
+        foreign_keys=[subject],
+        uselist=False
+    )
 
 
 class DbLoginRecord(db.ModelBase):

@@ -22,16 +22,22 @@ def create_or_get_user(
     if not state.terms_accepted:
         raise RuntimeError("User has not accepted terms")
 
-    user = db_controller.get_or_create_user(
+    user = db_controller.get_user_by_external_subject(
         session=session,
-        tin=state.tin,
+        identity_provider=state.identity_provider,
+        external_subject=state.external_subject,
     )
 
-    db_controller.attach_external_user(
-        session=session,
-        user=user,
-        external_subject=state.external_subject,
-        identity_provider=state.identity_provider,
-    )
+    if not user:
+        user = db_controller.get_or_create_user(
+            session=session,
+        )
+
+        db_controller.attach_external_user(
+            session=session,
+            user=user,
+            external_subject=state.external_subject,
+            identity_provider=state.identity_provider,
+        )
 
     return user
