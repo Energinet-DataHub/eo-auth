@@ -20,6 +20,7 @@ from origin.api.testing import (
     assert_base_url,
     assert_query_parameter,
 )
+import requests_mock
 
 from auth_api.db import db
 from auth_api.endpoints import AuthState
@@ -266,6 +267,7 @@ class TestOidcCallbackEndpointsSubjectKnown(OidcCallbackEndpointsSubjectKnownBas
     def test__should_307_redirect_to_correct_return_url(
             self,
             client: FlaskClient,
+            datasync_adapter: requests_mock.Adapter,
             callback_endpoint_path: str,
             return_url: str,
             state_encoded: str,
@@ -319,6 +321,7 @@ class TestOidcCallbackEndpointsSubjectKnown(OidcCallbackEndpointsSubjectKnownBas
     def test__should_register_user_login(
             self,
             client: FlaskClient,
+            datasync_adapter: requests_mock.Adapter,
             mock_session: db.Session,
             callback_endpoint_path: str,
             internal_subject: str,

@@ -40,15 +40,33 @@ The services make use of [Alembic](https://alembic.sqlalchemy.org/en/latest/)
 to manage database migrations, since this feature is not build into SQLAlchemy
 itself.
 
-To create a new database revision:
+Creating a new database revision, requires a running database eg. postgress database.
+The migration script checks the username, password, database values from the `settings.ini` file.
 
-    $ cd src/
-    $ alembic --config=migrations/alembic.ini revision --autogenerate
+
+To create a database running postgress using docker run:
+```sh
+# Run postgress database with default values from settings.ini
+#   Database: auth
+#   password: 1234
+#   username: postgres
+docker run --name some-postgres -e POSTGRES_USER=postgres -e POSTGRES_PASSWORD=1234 -e POSTGRES_DB=auth -d postgres
+```
+
+Before creating a new revision, the local database needs to apply all existing database migrations.
 
 To apply all existing database migrations, thus upgrading the database to the latest scheme:
 
     $ cd src/
     $ alembic --config=migrations/alembic.ini upgrade head
+
+
+After the database has been created and made sure the database IP matches the one defined in settings.in, we can create a new database revision:
+
+    $ cd src/
+    $ alembic --config=migrations/alembic.ini revision --autogenerate
+
+
 
 ## Applying migrations in production
 

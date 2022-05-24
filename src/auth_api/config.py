@@ -108,3 +108,12 @@ OIDC_LOGIN_URL = f'{OIDC_AUTHORITY_URL}/connect/authorize'
 OIDC_TOKEN_URL = f'{OIDC_AUTHORITY_URL}/connect/token'
 OIDC_JWKS_URL = f'{OIDC_AUTHORITY_URL}/.well-known/openid-configuration/jwks'
 OIDC_API_LOGOUT_URL = f'{OIDC_AUTHORITY_URL}/api/v1/session/logout'
+
+# -- eo-datasync -------------------------------------------------------------
+DATASYNC_BASE_URL = os.environ.get('DATASYNC_BASE_URL', 'http://eo-data-sync')
+
+# TODO: This subpath should be temporary and be changed to /relations instead
+# This is so that it matches up with the documentation at:
+# github.com/Energinet-DataHub/energy-origin/blob/main/doc/api/datasync.md
+DATASYNC_CREATE_RELATIONS_PATH = \
+    os.environ.get('DATASYNC_CREATE_RELATIONS_PATH', '/Relation/relations')
