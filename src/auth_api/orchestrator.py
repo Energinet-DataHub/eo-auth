@@ -1,6 +1,8 @@
 # Standard Library
+from ast import Dict
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
+from random import random
 from typing import Optional
 from xmlrpc.client import Boolean
 
@@ -14,9 +16,13 @@ from origin.auth import TOKEN_COOKIE_NAME
 from origin.encrypt import aes256_decrypt
 from origin.tokens import TokenEncoder
 from origin.tools import url_append
+from requests import request
+import requests
 
 # Local
 from auth_api.config import (
+    DATASYNC_BASE_URL,
+    DATASYNC_CREATE_RELATIONS_PATH,
     INTERNAL_TOKEN_SECRET,
     STATE_ENCRYPTION_SECRET,
     TOKEN_COOKIE_DOMAIN,
@@ -28,7 +34,7 @@ from auth_api.config import (
 )
 from auth_api.controller import db_controller
 from auth_api.db import db
-from auth_api.models import DbUser
+from auth_api.models import DbCompany, DbUser
 from auth_api.user import create_or_get_user
 from auth_api.state import AuthState
 
@@ -71,11 +77,13 @@ class LoginOrchestrator:
         self,
         state: AuthState,
         session: db.Session,
-        user: DbUser = None
+        user: Optional[DbUser] = None,
+        company: Optional[DbCompany] = None,
     ) -> None:
         self.state = state
         self.session = session
         self.user = user
+        self.company = company
 
     def redirect_next_step(
         self
@@ -158,6 +166,19 @@ class LoginOrchestrator:
             state=self.state,
         )
 
+        # If user is signed in as a company assign user to company
+        if self.state.tin:
+            self.company = db_controller.get_or_create_company(
+                session=self.session,
+                tin=self.state.tin,
+            )
+
+            db_controller.attach_user_to_company(
+                session=self.session,
+                company=self.company,
+                user=self.user,
+            )
+
         return self._return_login_success()
 
     def _return_login_success(
@@ -183,6 +204,53 @@ class LoginOrchestrator:
             cookie=cookie
         )
 
+    def _create_relations(self, internal_token: str) -> bool:
+        """
+        Create relationship between user and meteringpoints.
+
+        This is a temporary function to tell the data-sync domain to create
+        a relation between the user and it's meteringpoints. This will be
+        replaced once the event store is up and running
+
+        :return: Success
+        :rtype: bool
+        """
+
+        if not self.user and not self.company:
+            raise Exception(
+                "Failed to create meteringpoint relation. Expected ssn or tin"
+            )
+
+        tin = None
+        ssn = None
+
+        if self.company:
+            tin = self.company.tin
+        elif self.user:
+            ssn = self.user.ssn
+        else:
+            raise Exception(
+                "Failed to create relationship. Neither tin or ssn were set"
+            )
+
+        uri = f'{DATASYNC_BASE_URL}{DATASYNC_CREATE_RELATIONS_PATH}'
+
+        response = requests.post(
+            url=uri,
+            headers={
+                "Authorization": f'Bearer: {internal_token}'
+            },
+            json={
+                "ssn": ssn,
+                "tin": tin,
+            }
+        )
+
+        if response.status_code != 200:
+            print(f"Failed to create releation for user {self.user.subject}")
+        else:
+            print(f"created response for user {self.user.subject}")
+
     def _log_in_user_and_create_cookie(
         self
     ) -> Cookie:
@@ -192,6 +260,13 @@ class LoginOrchestrator:
         Register user login after completed registration and create http only
         cookie.
         """
+
+        subject = self.user.subject
+
+        # Check if user logged in on behalf of a company
+        if self.company:
+            subject = self.company.id
+
         db_controller.register_user_login(
             session=self.session,
             user=self.user,
@@ -203,13 +278,23 @@ class LoginOrchestrator:
             session=self.session,
             issued=issued,
             expires=issued + TOKEN_EXPIRY_DELTA,
-            subject=self.user.subject,
+            actor=self.user.subject,
+            subject=subject,
             scope=TOKEN_DEFAULT_SCOPES,
             id_token=aes256_decrypt(
                 self.state.id_token,
                 STATE_ENCRYPTION_SECRET
             ),
         )
+
+        # Get token required to create relations
+        token = db_controller.get_token(
+            session=self.session,
+            opaque_token=opaque_token,
+        )
+
+        # Create relationship between meteringpoints and the user
+        self._create_relations(token.internal_token)
 
         return Cookie(
             name=TOKEN_COOKIE_NAME,

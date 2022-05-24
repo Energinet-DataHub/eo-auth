@@ -1,5 +1,6 @@
 # Standard Library
 from datetime import datetime, timezone
+from optparse import Option
 from typing import List, Optional
 from uuid import uuid4
 
@@ -15,12 +16,14 @@ from .config import (
 )
 from .db import db
 from .models import (
+    DbCompany,
     DbExternalUser,
     DbLoginRecord,
     DbToken,
     DbUser,
 )
 from .queries import (
+    CompanyQuery,
     ExternalUserQuery,
     TokenQuery,
     UserQuery,
@@ -77,11 +80,31 @@ class DatabaseController(object):
         if external_user:
             return external_user.user
 
+    def get_company_by_tin(
+        self,
+        session: db.Session,
+        tin: str
+    ) -> Optional[DbCompany]:
+        """
+        Get a company by tin.
+
+        :param session: Database session
+        :type session: db.Session
+        :param tin: company tin (Tax Identification Number)
+        :type tin: str
+        :return: Company
+        :rtype: Optional[DbCompany]
+        """
+        company = CompanyQuery(session) \
+            .has_tin(tin) \
+            .one_or_none()
+
+        return company
+
     def get_or_create_user(
             self,
             session: db.Session,
             ssn: Optional[str] = None,
-            tin: Optional[str] = None,
     ) -> DbUser:
         """
         Identify a subject.
@@ -100,8 +123,6 @@ class DatabaseController(object):
 
         if ssn is not None:
             query = query.has_ssn(ssn_encrypted)
-        if tin is not None:
-            query = query.has_tin(tin)
 
         user = query.one_or_none()
 
@@ -109,10 +130,10 @@ class DatabaseController(object):
             user = DbUser(
                 subject=str(uuid4()),
                 ssn=ssn_encrypted,
-                tin=tin,
             )
 
             session.add(user)
+            session.commit()
 
         return user
 
@@ -148,6 +169,7 @@ class DatabaseController(object):
                 identity_provider=identity_provider,
                 external_subject=external_subject
             ))
+            session.commit()
 
     def create_user(
             self,
@@ -169,6 +191,7 @@ class DatabaseController(object):
         )
 
         session.add(user)
+        session.commit()
 
         return user
 
@@ -188,11 +211,75 @@ class DatabaseController(object):
             created=datetime.now(tz=timezone.utc),
         ))
 
+    def create_company(
+        self,
+        session: db.Session,
+        tin: str,
+    ) -> DbCompany:
+        """Create a new company with a given tin
+
+        :param session: Database sessoin
+        :type session: db.Session
+        :param tin: Company tax identification number
+        :type tin: str
+        :return: Created company
+        :rtype: DbCompany
+        """
+
+        company = DbCompany(
+            tin=tin,
+            id=str(uuid4()),
+        )
+
+        session.add(company)
+        session.commit()
+
+        return company
+
+    def get_or_create_company(
+        self,
+        session: db.Session,
+        tin: str,
+    ) -> DbCompany:
+        """get or create a company by/with tin.
+
+        :param session: Database session
+        :type session: db.Session
+        :param tin: Tax identification number
+        :type tin: str
+        :return: Company
+        :rtype: DbCompany
+        """
+        query = CompanyQuery(session)
+
+        query = query.has_tin(tin)
+
+        company = query.one_or_none()
+
+        if company is None:
+            company = self.create_company(
+                session=session,
+                tin=tin,
+            )
+
+        return company
+
+    def attach_user_to_company(
+        self,
+        session: db.Session,
+        company: DbCompany,
+        user: DbUser,
+    ):
+        if user not in company.users:
+            company.users.append(user)
+            session.commit()
+
     def create_token(
             self,
             session: db.Session,
             issued: datetime,
             expires: datetime,
+            actor: str,
             subject: str,
             id_token: str,
             scope: List[str],
@@ -210,6 +297,7 @@ class DatabaseController(object):
         :param issued: Time when token is issued
         :param expires: Time when token expires
         :param subject: The subject to create token for
+        :param actor: The actor who is logged in on behalf of subject
         :param id_token: ID token from Identity Provider, raw/encoded
         :param scope: The scopes to grant
         :returns: Opaque token
@@ -217,7 +305,7 @@ class DatabaseController(object):
         internal_token = InternalToken(
             issued=issued,
             expires=expires,
-            actor=subject,
+            actor=actor,
             subject=subject,
             scope=scope,
         )
