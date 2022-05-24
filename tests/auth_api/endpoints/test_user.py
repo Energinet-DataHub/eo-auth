@@ -2,7 +2,7 @@
 import pytest
 from flask.testing import FlaskClient
 from auth_api.db import db
-from auth_api.models import DbUser, DbToken
+from auth_api.models import DbCompany, DbUser, DbToken
 from datetime import datetime
 
 # # -- fixtures ---------------------------------------------------------------
@@ -14,11 +14,11 @@ def seeded_session(
     internal_token_encoded: str,
     id_token: str,
     subject: str,
+    actor: str,
     expires_datetime: datetime,
     issued_datetime: datetime,
     opaque_token: str,
     ssn: str,
-    tin: str,
 ) -> db.Session:
     """Mock database with a list of mock-users and mock-external-users."""
 
@@ -26,10 +26,17 @@ def seeded_session(
 
     mock_session.begin()
 
-    mock_session.add(DbUser(
-        subject=subject,
+    user = DbUser(
+        subject=actor,
         ssn=ssn,
-        tin=tin,
+    )
+
+    mock_session.add(user)
+
+    mock_session.add(DbCompany(
+        id=subject,
+        tin="tin_1",
+        users=[user],
     ))
 
     # -- Insert Token into database ---------------------------------------
