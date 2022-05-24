@@ -23,6 +23,8 @@ from auth_api.app import create_app
 from auth_api.state import AuthState
 from auth_api.db import db as _db
 from auth_api.config import (
+    DATASYNC_BASE_URL,
+    DATASYNC_CREATE_RELATIONS_PATH,
     OIDC_API_LOGOUT_URL,
     INTERNAL_TOKEN_SECRET,
     TOKEN_EXPIRY_DELTA,
@@ -424,6 +426,18 @@ def request_mocker() -> requests_mock:
     with requests_mock.Mocker() as mock:
         yield mock
 
+
+@pytest.fixture(scope='function')
+def datasync_adapter(request_mocker: requests_mock) -> requests_mock.Adapter:
+    """Mock the datasync endpoint response to return status code 200."""
+    url = f'{DATASYNC_BASE_URL}{DATASYNC_CREATE_RELATIONS_PATH}'
+
+    adapter = request_mocker.post(
+        url,
+        text='',
+        status_code=200
+    )
+    return adapter
 
 @pytest.fixture(scope='function')
 def oidc_adapter(request_mocker: requests_mock) -> requests_mock.Adapter:
