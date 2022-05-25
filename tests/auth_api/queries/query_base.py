@@ -5,7 +5,13 @@ from origin.tokens import TokenEncoder
 from origin.models.auth import InternalToken
 
 from auth_api.db import db
-from auth_api.models import DbUser, DbExternalUser, DbLoginRecord, DbToken
+from auth_api.models import (
+    DbCompany,
+    DbUser,
+    DbExternalUser,
+    DbLoginRecord,
+    DbToken
+)
 from datetime import datetime, timezone, timedelta
 
 # -- Fixtures ----------------------------------------------------------------
@@ -13,20 +19,43 @@ from datetime import datetime, timezone, timedelta
 DB_USER_1 = {
     "subject": 'SUBJECT_1',
     "ssn": "SSN_1",
-    "tin": 'TIN_1'
+    "companies": [],
 }
 
 DB_USER_2 = {
     "subject": 'SUBJECT_2',
     "ssn": "SSN_2",
-    "tin": 'TIN_2'
+    "companies": [],
 }
 
 DB_USER_3 = {
     "subject": 'SUBJECT_3',
     "ssn": "SSN_3",
-    "tin": 'TIN_3'
+    "companies": [],
 }
+
+DB_COMPANY_1 = {
+    "id": "COMPANY_1",
+    "tin": "TIN_1",
+    "users": [DB_USER_1],
+}
+
+DB_COMPANY_2 = {
+    "id": "COMPANY_2",
+    "tin": "TIN_2",
+    "users": [DB_USER_2],
+}
+
+DB_COMPANY_3 = {
+    "id": "COMPANY_3",
+    "tin": "TIN_3",
+    "users": [DB_USER_3],
+}
+
+# Update the user objects to be part of the companies as well
+DB_USER_1['companies'] = [DB_COMPANY_1]
+DB_USER_2['companies'] = [DB_COMPANY_2]
+DB_USER_3['companies'] = [DB_COMPANY_3]
 
 EXTERNAL_USER_4 = {
     "subject": 'SUBJECT_1',
@@ -55,6 +84,12 @@ USER_LIST = [
     DB_USER_1,
     DB_USER_2,
     DB_USER_3,
+]
+
+COMPANY_LIST = [
+    DB_COMPANY_1,
+    DB_COMPANY_2,
+    DB_COMPANY_3,
 ]
 
 USER_EXTERNAL_LIST = [
@@ -163,14 +198,33 @@ class TestQueryBase:
 
         # -- Insert user into database ---------------------------------------
 
-        mock_session.begin()
-
-        for user in USER_LIST:
-            mock_session.add(DbUser(
+        db_users = {
+            user['subject']: DbUser(
                 subject=user['subject'],
                 ssn=user['ssn'],
-                tin=user['tin'],
-            ))
+            )
+            for user in USER_LIST
+        }
+
+        for db_user in db_users.values():
+            mock_session.add(db_user)
+
+        # -- Insert companies into database ----------------------------------
+
+        db_companies = {
+            company['id']: DbCompany(
+                id=company['id'],
+                tin=company['tin'],
+                # Find correct users and add them too
+                users=[db_users[user['subject']] for user in company['users']]
+            )
+            for company in COMPANY_LIST
+        }
+
+        for db_company in db_companies.values():
+            mock_session.add(db_company)
+
+        # -- Insert external users into database ------------------------------
 
         for user in USER_EXTERNAL_LIST:
             mock_session.add(DbExternalUser(
