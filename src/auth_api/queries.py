@@ -94,8 +94,6 @@ class ExternalUserQuery(SqlQuery):
         """
         Check if external_user has internal user with id in the database.
 
-        # TODO TEST THIS QUERY
-
         :param user_id: unique user id
         :type user_id: str
         """
