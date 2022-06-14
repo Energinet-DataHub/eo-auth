@@ -16,7 +16,7 @@ eo-base-helm-chart:
     TOKEN_COOKIE_SAMESITE: true
     PSQL_HOST: eo-auth-postgresql
     PSQL_PORT: 5432
-    PSQL_USER: postgres
+    PSQL_USER: postgres2
     PSQL_DB: auth
     SQL_POOL_SIZE: 1
     # TODO Delete line below
