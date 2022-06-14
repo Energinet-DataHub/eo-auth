@@ -70,6 +70,7 @@ eo-base-helm-chart:
 
 global:
   postgresql:
-    postgresqlUsername: postgres
-    postgresqlDatabase: auth
-    existingSecret: auth-postgres-secret
+      auth:
+        postgresqlUsername: postgres
+        database: auth
+        existingSecret: auth-postgres-secret
