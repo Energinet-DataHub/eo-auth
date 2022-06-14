@@ -10,5 +10,5 @@ dependencies:
     version: "v0.6.2"
     repository: "https://energinet-datahub.github.io/helm-charts/"
   - name: postgresql
-    version: "10.13.8"
+    version: "11.6.6"
     repository: "https://charts.bitnami.com/bitnami"
