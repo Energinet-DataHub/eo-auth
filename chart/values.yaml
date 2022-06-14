@@ -43,7 +43,7 @@ eo-base-helm-chart:
       env: {}
       image:
         repository: ghcr.io/energinet-datahub/eo-auth-api
-        tag: 0.2.15
+        tag: 0.2.16
   service:
     deployment: api
     type: ClusterIP
@@ -70,6 +70,7 @@ eo-base-helm-chart:
 
 global:
   postgresql:
-    postgresqlUsername: postgres
-    postgresqlDatabase: auth
-    existingSecret: auth-postgres-secret
+      auth:
+        postgresqlUsername: postgres
+        database: auth
+        existingSecret: auth-postgres-secret
