@@ -32,7 +32,7 @@ eo-base-helm-chart:
 
     PSQL_PASSWORD:
       secretName: auth-postgres-secret
-      key: postgresql-password
+      key: postgres-password
 
   deployments:
     api:
