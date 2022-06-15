@@ -11,9 +11,7 @@ from origin.api import (
     TemporaryRedirect,
     Cookie,
     BadRequest,
-    Forbidden,
 )
-from auth_api import oidc
 
 from auth_api.db import db
 from auth_api.controller import db_controller

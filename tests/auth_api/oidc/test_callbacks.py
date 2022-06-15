@@ -8,7 +8,6 @@ should also act identically for some cases.
 Thus, tests in this file are generic across all OIDC callback endpoints,
 and are therefore tested on all of those endpoints.
 """
-import sys
 import pytest
 from typing import Dict, Any
 from unittest.mock import MagicMock
@@ -26,7 +25,6 @@ import requests_mock
 
 from auth_api.db import db
 from auth_api.endpoints import AuthState
-from auth_api.oidc.signaturgruppen.models import SignaturgruppenToken
 from auth_api.queries import LoginRecordQuery
 from auth_api.config import (
     TOKEN_COOKIE_DOMAIN,
