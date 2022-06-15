@@ -6,7 +6,7 @@ on:
     branches:
       - main
 
-concurrency: 
+concurrency:
   group: ${{ github.ref }}
   cancel-in-progress: false
 
@@ -19,17 +19,17 @@ jobs:
       ignore_lint_error: true
 
   define_build:
-    name: Define build matrix 
+    name: Define build matrix
     runs-on: ubuntu-latest
     outputs:
       chart_version: ${{ steps.get_semver.outputs.semver }}
       containers: >-
         [
-          { 
-            "deployment_name": "api", 
-            "dockerfile": "Dockerfile", 
-            "image_name": "eo-auth-api", 
-            "image_tag": "${{ steps.get_api_container_version.outputs.semver }}" 
+          {
+            "deployment_name": "api",
+            "dockerfile": "Dockerfile",
+            "image_name": "eo-auth-api",
+            "image_tag": "${{ steps.get_api_container_version.outputs.semver }}"
           }
         ]
     steps:
@@ -62,8 +62,8 @@ jobs:
   update_environment:
     name: Update env
     needs: [build_container_and_release_chart]
-    #only on: push to main OR PR on 'feature/**' branch
-    if: github.event_name == 'push' && github.ref_name == 'main' || github.event_name == 'pull_request' && startsWith(github.event.pull_request.head.ref, 'feature/')
+    #only on: push to main OR PR on 'preview/**' branch
+    if: github.event_name == 'push' && github.ref_name == 'main' || github.event_name == 'pull_request' && startsWith(github.event.pull_request.head.ref, 'preview/')
     uses: Energinet-DataHub/.github/.github/workflows/update-chart-in-env.yaml@main
     with:
       env_repository: ${{ github.repository_owner }}/eo-base-environment

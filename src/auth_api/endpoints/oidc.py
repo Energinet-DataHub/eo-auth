@@ -160,11 +160,19 @@ class OpenIDCallbackEndpoint(Endpoint):
                 state=request.state,
                 redirect_uri=self.url,
             )
-        except Exception:
+        except Exception as e:
+            print(e)
             # TODO Log this exception
             return redirect_to_failure(
                 state=state,
                 error_code='E505',
+            )
+
+        if oidc_token.ssn is not None:
+            print("Tried to login as a private user which isn't supported")
+            return redirect_to_failure(
+                state=state,
+                error_code='E504',
             )
 
         # Set values for later use
@@ -183,10 +191,12 @@ class OpenIDCallbackEndpoint(Endpoint):
             identity_provider=oidc_token.provider,
         )
 
-        company = db_controller.get_company_by_tin(
-            session=session,
-            tin=oidc_token.tin,
-        )
+        company = None
+        if oidc_token.tin:
+            company = db_controller.get_company_by_tin(
+                session=session,
+                tin=oidc_token.tin,
+            )
 
         orchestrator = LoginOrchestrator(
             session=session,
