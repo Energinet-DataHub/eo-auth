@@ -20,7 +20,7 @@ eo-base-helm-chart:
     PSQL_DB: auth
     SQL_POOL_SIZE: 1
     # TODO Delete line below
-    PSQL_PASSWORD: testpassword
+    # PSQL_PASSWORD: testpassword
   podSpec: {}
 
   envSecrets:
@@ -36,6 +36,10 @@ eo-base-helm-chart:
     # PSQL_PASSWORD:
     #   secretName: auth-postgres-secret
     #   key: postgres-password
+
+    PSQL_PASSWORD:
+      secretName: auth-postgres-secret
+      key: postgresql-password
 
   deployments:
     api:
@@ -71,12 +75,18 @@ eo-base-helm-chart:
       prefixes:
         - /api/auth
 
+# global:
+#   postgresql:
+#       auth:
+#         username: postgres
+#         database: auth
+#         # TODO Remove line below
+#         password: testpassword
+#         # TODO Uncomment line below
+#         # existingSecret: auth-postgres-secret
+
 global:
   postgresql:
-      auth:
-        username: postgres
-        database: auth
-        # TODO Remove line below
-        password: testpassword
-        # TODO Uncomment line below
-        # existingSecret: auth-postgres-secret
+    postgresqlUsername: postgres
+    postgresqlDatabase: auth
+    existingSecret: auth-postgres-secret
