@@ -20,6 +20,9 @@ OIDC_ERROR_CODES = {
     # Happens if we could not recognize error from Identity Provider.
     'E502': 'Internal Server Error at Identity Provider',
 
+    # Private users are not allowed to login
+    'E504': 'Private users are not allowed to login',
+
     # Happens if, for instance, we Identity Provider is offline,
     # and we could not fetch a token etc.
     'E505': 'Failed to communicate with Identity Provider',
