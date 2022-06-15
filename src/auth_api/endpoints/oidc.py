@@ -168,6 +168,13 @@ class OpenIDCallbackEndpoint(Endpoint):
                 error_code='E505',
             )
 
+        if oidc_token.ssn is not None or oidc_token.is_private:
+            print("Tried to login as a private user which isn't supported")
+            return redirect_to_failure(
+                state=state,
+                error_code='E504',
+            )
+
         # TODO: REMOVE THIS
         print(oidc_token)
 
