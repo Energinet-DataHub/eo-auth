@@ -33,7 +33,6 @@ eo-base-helm-chart:
     PSQL_PASSWORD:
       secretName: auth-postgres-secret
       key: postgresql-password
-
   deployments:
     api:
       replicaCount: 1
@@ -43,7 +42,7 @@ eo-base-helm-chart:
       env: {}
       image:
         repository: ghcr.io/energinet-datahub/eo-auth-api
-        tag: 0.2.15
+        tag: 0.2.16
   service:
     deployment: api
     type: ClusterIP

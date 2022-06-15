@@ -13,6 +13,7 @@ from typing import Dict, Any
 from unittest.mock import MagicMock
 from flask.testing import FlaskClient
 from datetime import datetime
+from unittest.mock import patch
 
 from origin.tokens import TokenEncoder
 from origin.auth import TOKEN_COOKIE_NAME, TOKEN_HEADER_NAME
@@ -92,6 +93,20 @@ def callback_endpoint_path(request) -> str:
     """Return path to callback endpoint."""
 
     return request.param
+
+
+@pytest.fixture(scope='function')
+def oidc_backend_mock() -> MagicMock:
+    """Return mock for OIDC backend."""
+
+    # with patch.object(
+    #     sys.module['auth_api.oidc'],
+    #     'oidc_backend'
+    # ) as oidc_backend_mock:
+
+    # with patch('auth_api.oidc.oidc_backend') as oidc_backend_mock:
+    with patch('auth_api.endpoints.oidc.oidc_backend') as oidc_backend_mock:
+        yield oidc_backend_mock
 
 
 # -- Tests -------------------------------------------------------------------
@@ -251,6 +266,70 @@ class TestOidcCallbackEndpoints(object):
             url=res.headers['Location'],
             name='success',
             value='0',
+        )
+
+    @pytest.mark.unittest
+    def test__handle_request__fetch_token_returns_ssn__should_redirect_to_return_url_with_error_code_E504(  # noqa: E501
+            self,
+            client: FlaskClient,
+            oidc_backend_mock: MagicMock,
+            state_encoder: TokenEncoder[AuthState],
+            callback_endpoint_path: str,
+    ):
+        """
+        When failing to fetch token from Identity Provider.
+
+        The endpoint should 307-redirect the client back to the return_url
+        defined in the state with success=0 and error.
+
+        :param client: API client
+        :param mock_fetch_token: Mocked fetch_token() method @ OAuth2Session
+        :param state_encoder: AuthState encoder
+        :param callback_endpoint_path: Endpoint path
+        """
+
+        # -- Arrange ---------------------------------------------------------
+
+        fe_url = 'https://foobar.com'
+        return_url = 'https://redirect-here.com/foobar'
+
+        state = AuthState(
+            fe_url=fe_url,
+            return_url=return_url,
+        )
+        state_encoded = state_encoder.encode(state)
+        token = MagicMock()
+        token.ssn.return_value = '123456789'
+
+        oidc_backend_mock.fetch_token.return_value = token
+
+        # -- Act -------------------------------------------------------------
+
+        res = client.get(
+            path=callback_endpoint_path,
+            query_string={'state': state_encoded},
+        )
+
+        # -- Assert ----------------------------------------------------------
+
+        assert res.status_code == 307
+
+        assert_base_url(
+            url=res.headers['Location'],
+            expected_base_url=return_url,
+            check_path=True,
+        )
+
+        assert_query_parameter(
+            url=res.headers['Location'],
+            name='success',
+            value='0',
+        )
+
+        assert_query_parameter(
+            url=res.headers['Location'],
+            name='error_code',
+            value='E504',
         )
 
 

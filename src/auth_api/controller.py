@@ -119,7 +119,7 @@ class DatabaseController(object):
         ssn_encrypted = encrypt_ssn(ssn) if ssn is not None else None
 
         query = UserQuery(session)
-
+        # TODO: REMOVE ALL SSN RELATED STUFF, IT'S A NOT NEEDED
         if ssn is not None:
             query = query.has_ssn(ssn_encrypted)
 
