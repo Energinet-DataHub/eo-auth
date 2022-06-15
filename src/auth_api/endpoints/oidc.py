@@ -175,6 +175,7 @@ class OpenIDCallbackEndpoint(Endpoint):
                 error_code='E504',
             )
 
+        # TODO: REMOVE THIS
         print(oidc_token)
 
         # Set values for later use
