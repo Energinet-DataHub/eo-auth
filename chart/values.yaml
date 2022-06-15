@@ -16,11 +16,9 @@ eo-base-helm-chart:
     TOKEN_COOKIE_SAMESITE: true
     PSQL_HOST: eo-auth-postgresql
     PSQL_PORT: 5432
-    PSQL_USER: postgres2
+    PSQL_USER: postgres
     PSQL_DB: auth
     SQL_POOL_SIZE: 1
-    # TODO Delete line below
-    PSQL_PASSWORD: testpassword
   podSpec: {}
 
   envSecrets:
@@ -32,11 +30,9 @@ eo-base-helm-chart:
       secretName: auth-random-secret
       key: eo-state-encryption-secret
 
-    # TODO Uncomment this below
-    # PSQL_PASSWORD:
-    #   secretName: auth-postgres-secret
-    #   key: postgres-password
-
+    PSQL_PASSWORD:
+      secretName: auth-postgres-secret
+      key: postgresql-password
   deployments:
     api:
       replicaCount: 1
@@ -73,10 +69,6 @@ eo-base-helm-chart:
 
 global:
   postgresql:
-      auth:
-        username: postgres
-        database: auth
-        # TODO Remove line below
-        password: testpassword
-        # TODO Uncomment line below
-        # existingSecret: auth-postgres-secret
+    postgresqlUsername: postgres
+    postgresqlDatabase: auth
+    existingSecret: auth-postgres-secret
