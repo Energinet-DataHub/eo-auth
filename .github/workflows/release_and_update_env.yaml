@@ -11,12 +11,12 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # py_validate:
-  #   name: Validate python
-  #   uses: Energinet-DataHub/.github/.github/workflows/python-pipenv-validate.yaml@main
-  #   with:
-  #     python_version: 3.8
-  #     ignore_lint_error: true
+  py_validate:
+    name: Validate python
+    uses: Energinet-DataHub/.github/.github/workflows/python-pipenv-validate.yaml@main
+    with:
+      python_version: 3.8
+      ignore_lint_error: true
 
   define_build:
     name: Define build matrix
@@ -49,7 +49,7 @@ jobs:
 
   build_container_and_release_chart:
     name: Build containers
-    needs: define_build # [py_validate, define_build]
+    needs: [py_validate, define_build]
     uses: Energinet-DataHub/.github/.github/workflows/build-containers-and-release-chart.yaml@main
     with:
       helm_repository: ${{ github.repository_owner }}/helm-charts

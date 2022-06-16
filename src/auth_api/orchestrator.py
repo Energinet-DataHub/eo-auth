@@ -175,9 +175,6 @@ class LoginOrchestrator:
                 user=self.user,
             )
 
-        print(f"Updated company database things: {self.state.tin}")
-        print(f" - user: {self.user}")
-
         return self._return_login_success()
 
     def _return_login_success(
@@ -223,8 +220,6 @@ class LoginOrchestrator:
         tin = None
         ssn = None
 
-        print(f"company: {self.company} user: {self.user}")
-
         if self.company is not None and self.company.tin is not None:
             tin = self.company.tin
         elif self.user is not None and self.user.ssn is not None:
@@ -236,7 +231,6 @@ class LoginOrchestrator:
 
         uri = f'{DATASYNC_BASE_URL}{DATASYNC_CREATE_RELATIONS_PATH}'
 
-        print(f"TIN: {tin} SSN: {ssn}")
         response = requests.post(
             url=uri,
             headers={

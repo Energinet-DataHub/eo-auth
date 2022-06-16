@@ -185,9 +185,6 @@ class OpenIDCallbackEndpoint(Endpoint):
             key=STATE_ENCRYPTION_SECRET,
         )
 
-        print(f"Updated state: {state}")
-        print(f"Updated tin: {state.tin}")
-
         # User is unknown when logging in for the first time and may be None
         user = db_controller.get_user_by_external_subject(
             session=session,
