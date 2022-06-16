@@ -181,7 +181,6 @@ class OpenIDCallbackEndpoint(Endpoint):
                 error_code='E504',
             )
 
-
         # Set values for later use
         state.tin = oidc_token.tin
         state.identity_provider = oidc_token.provider
