@@ -220,9 +220,9 @@ class LoginOrchestrator:
         tin = None
         ssn = None
 
-        if self.company:
+        if self.company is not None and self.company.tin is not None:
             tin = self.company.tin
-        elif self.user:
+        elif self.user is not None and self.user.ssn is not None:
             ssn = self.user.ssn
         else:
             raise Exception(
