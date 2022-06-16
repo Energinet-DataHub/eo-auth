@@ -299,7 +299,8 @@ class TestOidcCallbackEndpoints(object):
         )
         state_encoded = state_encoder.encode(state)
         token = MagicMock()
-        token.ssn.return_value = '123456789'
+        # token.ssn.return_value = '123456789'
+        token.is_private.return_value = True
 
         oidc_backend_mock.fetch_token.return_value = token
 
