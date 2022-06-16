@@ -175,6 +175,9 @@ class LoginOrchestrator:
                 user=self.user,
             )
 
+        print(f"Updated company database things: {self.state.tin}")
+        print(f" - user: {self.user}")
+
         return self._return_login_success()
 
     def _return_login_success(
@@ -220,9 +223,9 @@ class LoginOrchestrator:
         tin = None
         ssn = None
 
-        if self.company:
+        if self.company and self.company.tin:
             tin = self.company.tin
-        elif self.user:
+        elif self.user and self.user.ssn:
             ssn = self.user.ssn
         else:
             raise Exception(
@@ -231,6 +234,7 @@ class LoginOrchestrator:
 
         uri = f'{DATASYNC_BASE_URL}{DATASYNC_CREATE_RELATIONS_PATH}'
 
+        print(f"TIN: {tin} SSN: {ssn}")
         response = requests.post(
             url=uri,
             headers={
