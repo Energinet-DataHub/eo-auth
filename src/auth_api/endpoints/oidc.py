@@ -171,6 +171,7 @@ class OpenIDCallbackEndpoint(Endpoint):
         print("oidc_token.is_private", oidc_token.is_private)
         print("oidc_token.is_company", oidc_token.is_company)
         print("oidc_token.tin", oidc_token.tin)
+        print("oidc_token.ssn is set", oidc_token.ssn is not None)
         print("oidc_token.subject", oidc_token.subject)
 
         if oidc_token.is_private:
