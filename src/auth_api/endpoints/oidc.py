@@ -170,6 +170,7 @@ class OpenIDCallbackEndpoint(Endpoint):
 
         if oidc_token.is_private:
             print("Tried to login as a private user which isn't supported")
+            oidc_backend.logout(oidc_token.id_token)
             return redirect_to_failure(
                 state=state,
                 error_code='E504',
