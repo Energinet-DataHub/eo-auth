@@ -175,6 +175,9 @@ class LoginOrchestrator:
                 user=self.user,
             )
 
+        print(f"Updated company database things: {self.state.tin}")
+        print(f" - user: {self.user}")
+
         return self._return_login_success()
 
     def _return_login_success(
