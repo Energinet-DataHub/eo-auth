@@ -32,6 +32,13 @@ from auth_api.oidc import (
     oidc_backend,
 )
 
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+stream_handler = logging.StreamHandler()
+stream_handler.setLevel(logging.INFO)
+logger.addHandler(stream_handler)
+
 # -- Models ------------------------------------------------------------------
 
 
@@ -181,13 +188,6 @@ class OpenIDCallbackEndpoint(Endpoint):
         state.tin = oidc_token.tin
         state.identity_provider = oidc_token.provider
         state.external_subject = oidc_token.subject
-
-        logger = logging.getLogger()
-        logger.setLevel(logging.INFO)
-       
-        stream_handler = logging.StreamHandler()
-        stream_handler.setLevel(logging.INFO)
-        logger.addHandler(stream_handler)
 
         logger.info(f"time: {datetime.now()}, subject: {oidc_token.subject}")
 
