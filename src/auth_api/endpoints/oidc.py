@@ -2,6 +2,8 @@ from typing import Optional, Union
 from datetime import datetime, timezone
 from dataclasses import dataclass, field
 
+import logging
+
 from origin.auth import TOKEN_COOKIE_NAME
 from origin.encrypt import aes256_encrypt
 from origin.api import (
@@ -30,6 +32,15 @@ from auth_api.oidc import (
     oidc_backend,
 )
 
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+stream_handler = logging.StreamHandler()
+stream_formatter = logging.Formatter('%(asctime)s %(message)s')
+logging.StreamHandler.setFormatter(stream_formatter)
+
+logger.addHandler(stream_handler)
 
 # -- Models ------------------------------------------------------------------
 
@@ -180,6 +191,9 @@ class OpenIDCallbackEndpoint(Endpoint):
         state.tin = oidc_token.tin
         state.identity_provider = oidc_token.provider
         state.external_subject = oidc_token.subject
+
+        logger.log(oidc_token.subject)
+
         state.id_token = aes256_encrypt(
             data=oidc_token.id_token,
             key=STATE_ENCRYPTION_SECRET,
