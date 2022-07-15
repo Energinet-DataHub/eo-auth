@@ -2,6 +2,9 @@ from typing import Optional, Union
 from datetime import datetime, timezone
 from dataclasses import dataclass, field
 
+import logging
+import json
+
 from origin.auth import TOKEN_COOKIE_NAME
 from origin.encrypt import aes256_encrypt
 from origin.api import (
@@ -30,6 +33,13 @@ from auth_api.oidc import (
     oidc_backend,
 )
 
+# -- Logging -----------------------------------------------------------------
+
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+
+stream_handler = logging.StreamHandler()
+logger.addHandler(stream_handler)
 
 # -- Models ------------------------------------------------------------------
 
@@ -160,8 +170,8 @@ class OpenIDCallbackEndpoint(Endpoint):
                 state=request.state,
                 redirect_uri=self.url,
             )
-        except Exception as e:
-            print(e)
+        except Exception as _e:
+            print(_e)
             # TODO Log this exception
             return redirect_to_failure(
                 state=state,
@@ -180,6 +190,11 @@ class OpenIDCallbackEndpoint(Endpoint):
         state.tin = oidc_token.tin
         state.identity_provider = oidc_token.provider
         state.external_subject = oidc_token.subject
+
+        date_time = datetime.now().strftime('%d/%b/%Y:%H:%M:%S')
+
+        logger.info(json.dumps(f"[{date_time} +0000], {oidc_token.subject}"))
+
         state.id_token = aes256_encrypt(
             data=oidc_token.id_token,
             key=STATE_ENCRYPTION_SECRET,
