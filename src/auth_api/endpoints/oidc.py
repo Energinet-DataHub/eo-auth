@@ -38,7 +38,7 @@ logger.setLevel(logging.INFO)
 
 stream_handler = logging.StreamHandler()
 stream_formatter = logging.Formatter('time: %(asctime)s, subject: %(message)s')
-logging.StreamHandler.setFormatter(stream_formatter)
+logging.StreamHandler.setFormatter(fmt=stream_formatter)
 
 logger.addHandler(stream_handler)
 
