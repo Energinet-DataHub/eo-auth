@@ -1,9 +1,7 @@
+from re import sub
 from typing import Optional, Union
 from datetime import datetime, timezone
 from dataclasses import dataclass, field
-
-import logging
-import json
 
 from origin.auth import TOKEN_COOKIE_NAME
 from origin.encrypt import aes256_encrypt
@@ -32,14 +30,7 @@ from auth_api.config import (
 from auth_api.oidc import (
     oidc_backend,
 )
-
-# -- Logging -----------------------------------------------------------------
-
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-
-stream_handler = logging.StreamHandler()
-logger.addHandler(stream_handler)
+from auth_api.templates.logging_templates import LoggingTemplates
 
 # -- Models ------------------------------------------------------------------
 
@@ -149,6 +140,9 @@ class OpenIDCallbackEndpoint(Endpoint):
         :param request: Parameters provided by the Identity Provider
         :param session: Database session
         """
+
+        logger = LoggingTemplates(log_level='Information')
+
         # Decode state
         try:
             state = state_encoder.decode(request.state)
@@ -191,10 +185,6 @@ class OpenIDCallbackEndpoint(Endpoint):
         state.identity_provider = oidc_token.provider
         state.external_subject = oidc_token.subject
 
-        date_time = datetime.now().strftime('%d/%b/%Y:%H:%M:%S')
-
-        logger.info(json.dumps(f"[{date_time} +0000], {oidc_token.subject}"))
-
         state.id_token = aes256_encrypt(
             data=oidc_token.id_token,
             key=STATE_ENCRYPTION_SECRET,
@@ -220,6 +210,9 @@ class OpenIDCallbackEndpoint(Endpoint):
             user=user,
             company=company,
         )
+
+        logger.log(message=f"User {user.ssn}", actor=user.ssn, 
+                   subject=user.subject)
 
         return orchestrator.redirect_next_step()
 
