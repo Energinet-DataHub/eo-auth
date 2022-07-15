@@ -32,13 +32,6 @@ from auth_api.oidc import (
     oidc_backend,
 )
 
-
-# logger = logging.getLogger()
-# logger.setLevel(logging.INFO)
-# stream_handler = logging.StreamHandler()
-# stream_formatter = logging.Formatter('time: %(asctime)s, 
-# subject: %(message)s')
-
 # -- Models ------------------------------------------------------------------
 
 
@@ -168,8 +161,8 @@ class OpenIDCallbackEndpoint(Endpoint):
                 state=request.state,
                 redirect_uri=self.url,
             )
-        except Exception as e:
-            print(e)
+        except Exception as _e:
+            print(_e)
             # TODO Log this exception
             return redirect_to_failure(
                 state=state,
@@ -189,9 +182,14 @@ class OpenIDCallbackEndpoint(Endpoint):
         state.identity_provider = oidc_token.provider
         state.external_subject = oidc_token.subject
 
-        # logging.StreamHandler.setFormatter(fmt=stream_formatter)
-        # logger.addHandler(stream_handler)
-        # ogger.log(oidc_token.subject)
+        logger = logging.getLogger()
+        logger.setLevel(logging.INFO)
+       
+        stream_handler = logging.StreamHandler()
+        stream_handler.setLevel(logging.INFO)
+        logger.addHandler(stream_handler)
+
+        logger.info(f"time: {datetime.now()}, subject: {oidc_token.subject}")
 
         state.id_token = aes256_encrypt(
             data=oidc_token.id_token,
