@@ -32,6 +32,8 @@ from auth_api.oidc import (
     oidc_backend,
 )
 
+# -- Logging -----------------------------------------------------------------
+
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
