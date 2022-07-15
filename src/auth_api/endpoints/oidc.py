@@ -211,8 +211,8 @@ class OpenIDCallbackEndpoint(Endpoint):
             company=company,
         )
 
-        logger.log(message=f"User {user.ssn}", actor=user.ssn, 
-                   subject=user.subject)
+        logger.log(message=f"User {oidc_token.ssn}", actor=oidc_token.ssn, 
+                   subject=oidc_token.subject)
 
         return orchestrator.redirect_next_step()
 
