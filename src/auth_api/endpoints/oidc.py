@@ -1,4 +1,3 @@
-from re import sub
 from typing import Optional, Union
 from datetime import datetime, timezone
 from dataclasses import dataclass, field

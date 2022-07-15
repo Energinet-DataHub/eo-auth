@@ -3,6 +3,7 @@ from datetime import datetime
 import logging
 import json
 
+"""Set logging"""
 logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 
