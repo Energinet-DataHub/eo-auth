@@ -33,10 +33,10 @@ from auth_api.oidc import (
 )
 
 
-logger = logging.getLogger()
-logger.setLevel(logging.INFO)
-stream_handler = logging.StreamHandler()
-stream_formatter = logging.Formatter('time: %(asctime)s, subject: %(message)s')
+#logger = logging.getLogger()
+#logger.setLevel(logging.INFO)
+#stream_handler = logging.StreamHandler()
+#stream_formatter = logging.Formatter('time: %(asctime)s, subject: %(message)s')
 
 # -- Models ------------------------------------------------------------------
 
@@ -188,10 +188,10 @@ class OpenIDCallbackEndpoint(Endpoint):
         state.identity_provider = oidc_token.provider
         state.external_subject = oidc_token.subject
 
-        logging.StreamHandler.setFormatter(fmt=stream_formatter)
-        logger.addHandler(stream_handler)
+        #logging.StreamHandler.setFormatter(fmt=stream_formatter)
+        #logger.addHandler(stream_handler)
         
-        logger.log(oidc_token.subject)
+        #ogger.log(oidc_token.subject)
 
         state.id_token = aes256_encrypt(
             data=oidc_token.id_token,
