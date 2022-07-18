@@ -18,7 +18,7 @@ class LoggingTemplates:
         self.log_level = log_level
 
     def log(self, message, actor, subject) -> None:
-        """This logs a certain template."""
+        """TODO."""
 
         time_stamp = datetime.now().strftime('%Y-%m-%dT%Y:%H:%M:%S.%f')
 
