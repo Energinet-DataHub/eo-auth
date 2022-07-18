@@ -30,7 +30,6 @@ from auth_api.oidc import (
     oidc_backend,
 )
 
-
 # -- Models ------------------------------------------------------------------
 
 
@@ -139,6 +138,7 @@ class OpenIDCallbackEndpoint(Endpoint):
         :param request: Parameters provided by the Identity Provider
         :param session: Database session
         """
+
         # Decode state
         try:
             state = state_encoder.decode(request.state)
@@ -160,8 +160,8 @@ class OpenIDCallbackEndpoint(Endpoint):
                 state=request.state,
                 redirect_uri=self.url,
             )
-        except Exception as e:
-            print(e)
+        except Exception as _e:
+            print(_e)
             # TODO Log this exception
             return redirect_to_failure(
                 state=state,
@@ -180,6 +180,7 @@ class OpenIDCallbackEndpoint(Endpoint):
         state.tin = oidc_token.tin
         state.identity_provider = oidc_token.provider
         state.external_subject = oidc_token.subject
+
         state.id_token = aes256_encrypt(
             data=oidc_token.id_token,
             key=STATE_ENCRYPTION_SECRET,
