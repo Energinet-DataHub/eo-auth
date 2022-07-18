@@ -29,7 +29,6 @@ from auth_api.config import (
 from auth_api.oidc import (
     oidc_backend,
 )
-from auth_api.templates.logging_templates import LoggingTemplates
 
 # -- Models ------------------------------------------------------------------
 
@@ -140,8 +139,6 @@ class OpenIDCallbackEndpoint(Endpoint):
         :param session: Database session
         """
 
-        logger = LoggingTemplates(log_level='Information')
-
         # Decode state
         try:
             state = state_encoder.decode(request.state)
@@ -209,9 +206,6 @@ class OpenIDCallbackEndpoint(Endpoint):
             user=user,
             company=company,
         )
-
-        logger.log(message=f"User {oidc_token.ssn}", actor=oidc_token.ssn, 
-                   subject=oidc_token.subject)
 
         return orchestrator.redirect_next_step()
 

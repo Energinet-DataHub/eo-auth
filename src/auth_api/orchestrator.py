@@ -38,6 +38,7 @@ from auth_api.oidc import (
     oidc_backend,
 )
 
+from auth_api.templates.logging_templates import LoggingTemplates
 
 @dataclass
 class LoginResponse:
@@ -258,6 +259,8 @@ class LoginOrchestrator:
         cookie.
         """
 
+        logger = LoggingTemplates(log_level='Information')
+
         subject = self.user.subject
 
         # Check if user logged in on behalf of a company
@@ -289,6 +292,10 @@ class LoginOrchestrator:
             session=self.session,
             opaque_token=opaque_token,
         )
+        
+
+        logger.log(message=f"User {self.company.tin}", actor=self.company.tin, 
+            subject=subject)
 
         # Create relationship between meteringpoints and the user
         self._create_relations(token.internal_token)
