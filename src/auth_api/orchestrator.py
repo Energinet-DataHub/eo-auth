@@ -294,7 +294,7 @@ class LoginOrchestrator:
             opaque_token=opaque_token,
         )
 
-        logger.log(message=f"User {self.company.tin}", actor=self.company.tin,
+        logger.log(message=f"User {self.state.tin}", actor=self.state.tin, 
                    subject=subject)
 
         # Create relationship between meteringpoints and the user
