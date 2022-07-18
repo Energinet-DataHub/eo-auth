@@ -19,7 +19,7 @@ class LoggingTemplates:
 
     def log(self, message, actor, subject) -> None:
         """TODO."""
-        
+
         time_stamp = datetime.now().strftime('%Y-%m-%dT%Y:%H:%M:%S.%f')
 
         json_dict = {"Timestamp": time_stamp,
