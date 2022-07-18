@@ -40,6 +40,7 @@ from auth_api.oidc import (
 
 from auth_api.templates.logging_templates import LoggingTemplates
 
+
 @dataclass
 class LoginResponse:
     """Class to handle the login response."""
@@ -292,10 +293,9 @@ class LoginOrchestrator:
             session=self.session,
             opaque_token=opaque_token,
         )
-        
 
         logger.log(message=f"User {self.company.tin}", actor=self.company.tin, 
-            subject=subject)
+                   subject=subject)
 
         # Create relationship between meteringpoints and the user
         self._create_relations(token.internal_token)
