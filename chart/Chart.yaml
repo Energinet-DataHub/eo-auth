@@ -7,7 +7,7 @@ version: 0.2.22
 
 dependencies:
   - name: eo-base-helm-chart
-    version: "v0.6.3"
+    version: "v0.6.2"
     repository: "https://energinet-datahub.github.io/helm-charts/"
   - name: postgresql
     version: "10.14.3"
