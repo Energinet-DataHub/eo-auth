@@ -13,7 +13,6 @@ eo-base-helm-chart:
   fullnameOverride: "eo-auth"
 
   env:
-    TOKEN_COOKIE_SAMESITE: true
     PSQL_HOST: eo-auth-postgresql
     PSQL_PORT: 5432
     PSQL_USER: postgres
@@ -42,7 +41,7 @@ eo-base-helm-chart:
       env: {}
       image:
         repository: ghcr.io/energinet-datahub/eo-auth-api
-        tag: 0.2.21
+        tag: 0.2.22
   service:
     deployment: api
     type: ClusterIP
