@@ -25,7 +25,11 @@ class GetUserUuid(Endpoint):
         request: Request,
         session: db.session,
     ) -> Response:
-        """Method to handle request."""
+        """
+        Handle HTTP Request.
+
+        :param cvr: a cvr number is passed
+        """
 
         company_uuid = db_controller.get_company_by_tin(
             session=session,
