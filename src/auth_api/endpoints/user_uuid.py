@@ -37,5 +37,5 @@ class GetUserUuid(Endpoint):
         )
 
         return self.Response(
-            uuid=company_uuid.tin
+            uuid=company_uuid.id
         )
