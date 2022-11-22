@@ -5,16 +5,18 @@ from auth_api.db import db
 
 
 class GetUserUuid(Endpoint):
-    """Endpoint for getting user uuid"""
+    """Endpoint for getting user uuid."""
 
     @dataclass
     class Request:
-        """Model for getting request tin"""
+        """Model for getting request tin."""
+
         cvr: str
 
     @dataclass
     class Response:
-        """Model for returning response"""
+        """Model for returning response."""
+
         uuid: str
 
     @db.session()
@@ -23,6 +25,7 @@ class GetUserUuid(Endpoint):
         request: Request,
         session: db.session,
     ) -> Response:
+        """Method to handle request."""
 
         company_uuid = db_controller.get_company_by_tin(
             session=session,
