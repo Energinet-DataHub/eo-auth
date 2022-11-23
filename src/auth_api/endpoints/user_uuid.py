@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from origin.api import Endpoint
+from origin.api import Endpoint, HttpError
 from auth_api.controller import db_controller
 from auth_api.db import db
 
@@ -31,11 +31,14 @@ class GetUserUuid(Endpoint):
         :param cvr: a cvr number is passed
         """
 
-        company_uuid = db_controller.get_company_by_tin(
+        company_profile = db_controller.get_company_by_tin(
             session=session,
             tin=request.cvr
         )
 
+        if company_profile is None:
+            raise HttpError(msg="Company not found", status=404)
+
         return self.Response(
-            uuid=company_uuid.id
+            uuid=company_profile.id
         )
