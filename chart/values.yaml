@@ -4,7 +4,6 @@ publicIngress:
     - /api/auth/oidc/login
     - /api/auth/terms
     - /api/auth/terms/accept
-    - /api/auth/user/uuid
   middlewares:
     - name: auth-stripprefix
 
