@@ -22,3 +22,7 @@ from .terms import (
 from .user import (
     GetUserInformation
 )
+
+from .user_uuid import (
+    GetUserUuid
+)
