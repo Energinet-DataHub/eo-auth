@@ -55,6 +55,7 @@ eo-base-helm-chart:
       - /api/auth/oidc/login
       - /api/auth/terms
       - /api/auth/terms/accept
+      - /api/auth/user/uuid
     servicePort: 80
     middlewares:
       - name: auth-stripprefix
