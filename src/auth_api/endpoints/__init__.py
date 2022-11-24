@@ -22,3 +22,7 @@ from .terms import (
 from .user import (
     GetUserInformation
 )
+
+from .company_uuid import (
+    GetCompanyId
+)
