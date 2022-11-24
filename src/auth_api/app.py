@@ -26,7 +26,7 @@ from .endpoints import (
     AcceptTerms,
     # User:
     GetUserInformation,
-    # User Uuid:
+    # Company id:
     GetCompanyId,
 )
 
