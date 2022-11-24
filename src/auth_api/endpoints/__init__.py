@@ -23,6 +23,6 @@ from .user import (
     GetUserInformation
 )
 
-from .user_uuid import (
+from .company_uuid import (
     GetCompanyId
 )

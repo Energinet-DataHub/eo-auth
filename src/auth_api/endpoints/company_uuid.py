@@ -5,7 +5,7 @@ from auth_api.db import db
 
 
 class GetCompanyId(Endpoint):
-    """Endpoint for getting company uuid."""
+    """Endpoint for getting company id."""
 
     @dataclass
     class Request:
