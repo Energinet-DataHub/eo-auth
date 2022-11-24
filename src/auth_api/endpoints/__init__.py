@@ -24,5 +24,5 @@ from .user import (
 )
 
 from .user_uuid import (
-    GetUserUuid
+    GetCompanyId
 )

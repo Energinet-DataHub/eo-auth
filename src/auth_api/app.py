@@ -27,7 +27,7 @@ from .endpoints import (
     # User:
     GetUserInformation,
     # User Uuid:
-    GetUserUuid,
+    GetCompanyId,
 )
 
 
@@ -133,7 +133,7 @@ def create_app() -> Application:
     app.add_endpoint(
         method='GET',
         path='/user/uuid',
-        endpoint=GetUserUuid(),
+        endpoint=GetCompanyId(),
     )
 
     return app

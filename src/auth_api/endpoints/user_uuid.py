@@ -4,7 +4,7 @@ from auth_api.controller import db_controller
 from auth_api.db import db
 
 
-class GetUserUuid(Endpoint):
+class GetCompanyId(Endpoint):
     """Endpoint for getting user uuid."""
 
     @dataclass
