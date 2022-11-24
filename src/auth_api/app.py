@@ -132,7 +132,7 @@ def create_app() -> Application:
 
     app.add_endpoint(
         method='GET',
-        path='/user/uuid',
+        path='/company/uuid',
         endpoint=GetCompanyId(),
     )
 
