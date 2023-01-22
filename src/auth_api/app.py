@@ -26,8 +26,6 @@ from .endpoints import (
     AcceptTerms,
     # User:
     GetUserInformation,
-    # Company id:
-    GetCompanyId,
 )
 
 
@@ -126,14 +124,6 @@ def create_app() -> Application:
         method='GET',
         path='/user/info',
         endpoint=GetUserInformation(),
-    )
-
-    # -- Return uuid from tin ------------------------------------------------
-
-    app.add_endpoint(
-        method='GET',
-        path='/company/uuid',
-        endpoint=GetCompanyId(),
     )
 
     return app
